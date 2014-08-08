@@ -1,0 +1,43 @@
+Schema classi progetto AI
+
+Carta 
+- string tipo_carta
+- string colore
+- int valore
+
+
+Mazzo
+- list<Carta> carte_mazzo
+- list<Carta> carte_scarto
+1. Carta carta_cima
+2. Carta pesca_carta()
+3. void butta_carta(Carta carta_corrente)
+4. void mescolaCarte()
+
+
+Giocatore
+- string nome
+- list<Carta> carte_mano
+1. void pesca_mazzo()
+2. void dichiara_uno()
+3. bool dichiara_vittoria()
+4. void passa_turno()
+5. Carta pesca_carta()
+6. Carta gioca_carta()
+
+
+Giocatore_CPU: Giocatore
+1. Carta minimax_carta_scelta()
+2. Carta potatura_ab_carta_gioco()
+
+
+Gioco_Uno
+- list<Object> giocatori
+- Mazzo CarteTotali
+1. void aggiungi_giocatore(giocatore)
+2. void inizia_gioco()
+3. void scegli_ordine()
+4. void genera_carte()
+5. void main()
+
+
