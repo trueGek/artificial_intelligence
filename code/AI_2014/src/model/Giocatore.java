@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Giocatore {
 	private String _nome;
-	private List<Carta> _carteInMano;
-	private GiocoUno _riferimentoGiocoUno;
+	protected List<Carta> _carteInMano;
+	protected GiocoUno _riferimentoGiocoUno;
 
 	//getter e setter
 	public String getNome() {

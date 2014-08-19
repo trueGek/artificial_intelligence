@@ -216,7 +216,9 @@ public class GiocoUno {
 		
 	}
 	
-	
+	public void ProseguiGiocoCasoGiocatoriAncheUmani(){
+		
+	}
 	
 	
 	
