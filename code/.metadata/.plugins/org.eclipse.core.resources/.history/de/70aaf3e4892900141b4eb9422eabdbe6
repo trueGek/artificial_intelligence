@@ -176,7 +176,7 @@ class FrameP extends JFrame{
 			card_i.setFont(new Font("Arial", Font.PLAIN, 25));
 			card_i.setForeground(Color.RED);
 			
-			card_i.addActionListener(new PlayCard(deck[i], "red"));
+			card_i.addActionListener(new PlayCard());
 			
 			g1.add(card_i, g1);
 			
@@ -265,7 +265,7 @@ class FrameP extends JFrame{
 			card_i.setFont(new Font("Comic-sans", Font.PLAIN, 25));
 			card_i.setForeground(Color.RED);
 					
-			card_i.addActionListener(new PlayCard(deck[i], "red"));
+			card_i.addActionListener(new PlayCard());
 					
 			g2.add(card_i, g2);
 					
@@ -301,7 +301,7 @@ class FrameP extends JFrame{
 		
 	}
 	
-	private void ShowCard(String x, String y) {
+	private void ShowCard(string) {
 		
 		c.removeAll();
 		
@@ -310,16 +310,8 @@ class FrameP extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		
-		JLabel played_card = new JLabel("Hai giocato il " + x + " " + y);
+		JLabel played_card = new JLabel();
 		
-		
-		c.add(match, BorderLayout.NORTH);
-		c.add(played_card, BorderLayout.CENTER);
-		
-		JButton Next = new JButton("Prossima mossa");
-		c.add(Next, BorderLayout.SOUTH);
-
-		Next.addActionListener(new PlayGame());
 		
 	}
 	
@@ -378,14 +370,6 @@ class FrameP extends JFrame{
 				user_2 = your_name.getText();
 				GameTable();
 				cont.removeActionListener(this);
-			}else{
-				
-				if(button.getText()=="Prossima mossa"){
-					
-					GameTable();
-					
-				}
-				
 			}
 			
 		}
@@ -396,21 +380,12 @@ class FrameP extends JFrame{
 	
 	class PlayCard implements ActionListener{
 		
-		private final String num;
-		private final String color;
-		
-		PlayCard(final String n, final String c){
-			
-			this.num = n;
-			this.color = c;
-			
-		}
-		
 		public void actionPerformed(ActionEvent e){
 			
-			if(num=="+4"&&color=="red"){
+			JButton button = (JButton)e.getSource();
+			if(button.getText()=="+4"){
 				
-				ShowCard(num, color);
+				
 				
 			}
 			

@@ -317,8 +317,7 @@ class FrameP extends JFrame{
 		c.add(played_card, BorderLayout.CENTER);
 		
 		JButton Next = new JButton("Prossima mossa");
-		c.add(Next, BorderLayout.SOUTH);
-
+		
 		Next.addActionListener(new PlayGame());
 		
 	}

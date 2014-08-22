@@ -317,8 +317,7 @@ class FrameP extends JFrame{
 		c.add(played_card, BorderLayout.CENTER);
 		
 		JButton Next = new JButton("Prossima mossa");
-		c.add(Next, BorderLayout.SOUTH);
-
+		
 		Next.addActionListener(new PlayGame());
 		
 	}
@@ -378,14 +377,6 @@ class FrameP extends JFrame{
 				user_2 = your_name.getText();
 				GameTable();
 				cont.removeActionListener(this);
-			}else{
-				
-				if(button.getText()=="Prossima mossa"){
-					
-					GameTable();
-					
-				}
-				
 			}
 			
 		}
