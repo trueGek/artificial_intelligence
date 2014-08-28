@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GiocatoreCPU extends Giocatore {
 	private Boolean _tipologiaAlgoritmo = false;
 	
@@ -19,10 +22,43 @@ public class GiocatoreCPU extends Giocatore {
 
 	//ritorna la carta scelta da giocare utilizzando l'algoritmo minimax
 	private Carta MinimaxCartaScelta(){
+		//devo valutare il massimo delle prime giocate possibili da me
+		//in imput devo avere lo stato del gioco attuale quindi le carte in mano e le carte in tavola
+		//quindi devo clonare le due liste per poterle modificare senza effettuare cambiamenti
+		List<Carta> carteInManoMiniMax = this.CloneListaCarte(this._carteInMano);
+		List<Carta> carteInTavolaMinimax = this.CloneListaCarte(this._riferimentoGiocoUno.getMazzoTotale().getCarteScartate());
+		int risultato = this.TurnoDiMax(carteInManoMiniMax, carteInTavolaMinimax);
 		
 		return new Carta("+2", "rossa", true); 	
 	}
+	//parte max di minimax
+	private int TurnoDiMax(List<Carta> carteInMano, List<Carta> carteInTavola){
+		//se questa è l'ultima azione da fare allora restituisci valore funzione obiettivo
+		if(this.TerminatoAlbero(carteInMano)){
+			int risultato = this.ValutaMossa(cartaGiocata);
+		}
+		int valori = -1;
+		//passo tutte le possibili carte che posso giocare 
+		for(int i = 0; i < this._carteInMano.size(); i++){
+			int valRestituitoAzioneGiocata = this.TurnoDiMin(); 
+		}
+	}
+	//parte min di minimax
+	private int TurnoDiMin(){
+		return 1;
+	}
 	
+	
+	//funzione di terminazione. restituisce true se sono alla fine dell'albero
+	private Boolean TerminatoAlbero(List<Carta> listaCarteInMano){
+		if(listaCarteInMano.isEmpty()){
+			return true; // se la lista delle carte in mano è 1 vuol dire che ho vinto e finito il gioco
+		}else{
+			return false;
+		}
+	}
+	
+	//funzione di valutazione
 	private int ValutaMossa(Carta cartaGiocata){
 		//riferimmento a carta in cima al mazzo sul tavolo
 		Carta cartaSulBanco = this._riferimentoGiocoUno.getMazzoTotale().CartaInCima();
@@ -52,15 +88,15 @@ public class GiocatoreCPU extends Giocatore {
 		}
 		//se la carta giocata è una carta con stesso simbolo ma colore diverso
 		if(cartaGiocata.getTipocarta() == cartaSulBanco.getTipocarta() & cartaGiocata.getColore() != cartaSulBanco.getColore()){
-			return 1 + this.subFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
+			return 1 + this.SubFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
 		}
 		//se la carta ha lo stesso colore
 		if(cartaGiocata.getColore() == cartaSulBanco.getColore()){
-			return 2 + this.subFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
+			return 2 + this.SubFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
 		}
 		return 0;
 	}	
-	private int subFunzioneCasiParticolari(Carta cartaGiocata, Carta cartaSulBanco){
+	private int SubFunzioneCasiParticolari(Carta cartaGiocata, Carta cartaSulBanco){
 		//se la carta giocata è una carta azione cambia giro
 		if(cartaGiocata.getTipocarta() == "inverti giro"){
 			return 1;
@@ -100,6 +136,18 @@ public class GiocatoreCPU extends Giocatore {
 			return null;
 		}
 		
+	}
+	
+	
+	//clona mazzo di carte
+	private List<Carta> CloneListaCarte(List<Carta> DaClonare){
+		List<Carta> nuovaLista = new ArrayList<Carta>();
+		//copio tutti gli elementi della lista
+		for(int i = 0; i < DaClonare.size(); i++){
+			Carta nuovaCarta = new Carta(DaClonare.get(i).getTipocarta(),DaClonare.get(i).getColore(),DaClonare.get(i).getCausaSaltoTurno());
+			nuovaLista.add(nuovaCarta);
+		}
+		return nuovaLista;
 	}
 	
 	
