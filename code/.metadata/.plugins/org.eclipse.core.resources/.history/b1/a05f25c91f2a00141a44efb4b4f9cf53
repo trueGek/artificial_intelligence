@@ -324,40 +324,12 @@ class FrameP extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		
-		JLabel played_card = new JLabel("Hai percato il " + x + " " + y);
+		JLabel played_card = new JLabel("Hai giocato il " + x + " " + y);
 		
 		c.add(match, BorderLayout.NORTH);
 		c.add(played_card, BorderLayout.CENTER);
 		
-		JButton Next = new JButton("Continua turno");
-		c.add(Next, BorderLayout.SOUTH);
-		
-		Next.addActionListener(new PlayGame());
-		
-		this.setVisible(true);
-		
-	}
-	
-private void ErrorCard() {
-		
-		c.removeAll();
-		
-		c = (JPanel)this.getContentPane();
-		this.setSize(300,200);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		c.setLayout(new BorderLayout());
-		
-		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-		
-		JLabel played_card = new JLabel("La carta non è compatibile");
-		
-		JLabel icn = new JLabel(icon);
-		
-		c.add(match, BorderLayout.NORTH);
-		c.add(icn, BorderLayout.WEST);
-		c.add(played_card, BorderLayout.CENTER);
-		
-		JButton Next = new JButton("Continua turno");
+		JButton Next = new JButton("Prossima mossa");
 		c.add(Next, BorderLayout.SOUTH);
 		
 		Next.addActionListener(new PlayGame());
@@ -431,14 +403,6 @@ private void ErrorCard() {
 						
 						GameTable();
 						
-					}else{
-						
-						if(button.getText()=="Continua turno"){
-							
-							GameTable();
-							
-						}
-						
 					}
 					
 				}
@@ -466,7 +430,6 @@ private void ErrorCard() {
 		private final String num;
 		private final String color;
 		
-		
 		PlayCard(final String n, final String c){
 			
 			this.num = n;
@@ -475,21 +438,9 @@ private void ErrorCard() {
 		}
 		
 		public void actionPerformed(ActionEvent e){
-				
-				String curNum = "4";
-				String curCol = "blu";
-			
-				if(num==curNum | color==curCol | num=="+4")
-				{
-					
-					ShowCard(num, color);
-					
-				}else{
-					
-					ErrorCard();
-					
-				}
-			
+						
+				ShowCard(num, color);
+
 		}
 		
 	}

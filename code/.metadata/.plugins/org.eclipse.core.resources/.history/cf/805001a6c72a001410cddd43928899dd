@@ -354,7 +354,7 @@ private void ErrorCard() {
 		JLabel icn = new JLabel(icon);
 		
 		c.add(match, BorderLayout.NORTH);
-		c.add(icn, BorderLayout.WEST);
+		c.add(icn, BorderLayout.CENTER);
 		c.add(played_card, BorderLayout.CENTER);
 		
 		JButton Next = new JButton("Continua turno");

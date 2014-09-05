@@ -338,34 +338,6 @@ class FrameP extends JFrame{
 		
 	}
 	
-private void ErrorCard() {
-		
-		c.removeAll();
-		
-		c = (JPanel)this.getContentPane();
-		this.setSize(300,200);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		c.setLayout(new BorderLayout());
-		
-		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-		
-		JLabel played_card = new JLabel("La carta non è compatibile");
-		
-		JLabel icn = new JLabel(icon);
-		
-		c.add(match, BorderLayout.NORTH);
-		c.add(icn, BorderLayout.WEST);
-		c.add(played_card, BorderLayout.CENTER);
-		
-		JButton Next = new JButton("Continua turno");
-		c.add(Next, BorderLayout.SOUTH);
-		
-		Next.addActionListener(new PlayGame());
-		
-		this.setVisible(true);
-		
-	}
-	
 	class ResetGame implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){

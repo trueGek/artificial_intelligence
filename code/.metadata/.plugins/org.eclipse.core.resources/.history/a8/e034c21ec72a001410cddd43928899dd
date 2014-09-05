@@ -347,14 +347,9 @@ private void ErrorCard() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		
-		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-		
 		JLabel played_card = new JLabel("La carta non è compatibile");
 		
-		JLabel icn = new JLabel(icon);
-		
 		c.add(match, BorderLayout.NORTH);
-		c.add(icn, BorderLayout.WEST);
 		c.add(played_card, BorderLayout.CENTER);
 		
 		JButton Next = new JButton("Continua turno");
