@@ -40,6 +40,17 @@ public class Mazzo {
 		return this._carteDelMazzo.remove(0);
 	}
 	
+	//inizializza carte scartate
+    public void ScartaPrimaCartaInizioPartita(){
+    	//la prima carta non può essere jolli o +2, salta giro o cambia giro
+        Carta cartaPescata = this.PescaCarta();
+        while(cartaPescata.getColore() != "Jolly" && cartaPescata.getTipocarta() != "+2" && cartaPescata.getTipocarta() != "inverti giro" && cartaPescata.getTipocarta() != "stop"){
+            this._carteDelMazzo.add(cartaPescata);
+            cartaPescata = this.PescaCarta();
+        }
+        this._carteScartate.add(cartaPescata);
+    }
+    
 	//butta una carta. Prende una carta passata per parametro e la aggiunge alla lista carteScartate
 	public void ButtaCarta(Carta cartaCorrente) {
 		this._carteScartate.add(cartaCorrente);

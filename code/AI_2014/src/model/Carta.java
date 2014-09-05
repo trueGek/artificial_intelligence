@@ -5,6 +5,7 @@ public class Carta {
 	private String _colore;
 	private Integer _valore;
 	private Boolean _causaSaltoTurno;
+	private Boolean _usata;
 
 	//getter and setter
 	public String getTipocarta() {
@@ -35,6 +36,8 @@ public class Carta {
 		this._colore = colore;
 		this._tipocarta = tipoCarta;
 		this._causaSaltoTurno = saltaTurno;
+		this._usata = false;
+		this._valore = 0;
 	}
 
 	public Boolean getCausaSaltoTurno() {
@@ -43,6 +46,14 @@ public class Carta {
 
 	public void setCausaSaltoTurno(Boolean _causaSaltoTurno) {
 		this._causaSaltoTurno = _causaSaltoTurno;
+	}
+
+	public Boolean getUsata() {
+		return _usata;
+	}
+
+	public void setUsata(Boolean _usata) {
+		this._usata = _usata;
 	}
 
 }

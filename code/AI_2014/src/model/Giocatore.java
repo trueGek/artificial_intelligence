@@ -36,10 +36,15 @@ public class Giocatore {
 		return this._riferimentoGiocoUno.getMazzoTotale().PescaCarta();
 	}	
 	
-	//Pesca le carte iniziali per iniziare il gioco
+	//agginge una carta al mazzo
+    public void AggiungeUnaCartaAlMazzo(){
+        this._carteInMano.add(this.PescaCartaDalMazzo());
+    }
+	
+    //Pesca le carte iniziali per iniziare il gioco //settiamo a 6 le carte iniziali
 	public void PescaCarteIniziali(){
 		for(int i = 0; i < 6 ; i++){
-			this._carteInMano.add(this.PescaCartaDalMazzo());
+			this.AggiungeUnaCartaAlMazzo();
 		}
 	}
 
@@ -58,6 +63,11 @@ public class Giocatore {
 		return cartaSelezionata;
 	}
 	
+	//azzera lista carte in mano
+    public void EliminaCarteInMano(){
+        this._carteInMano.clear();
+    }
+    
 	//metodo usato per passare il turno. non si fa nulla
 	public void PassaIlTurno(){
 		 

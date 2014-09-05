@@ -7,6 +7,16 @@ public class GiocoUno {
 	private List<Object> _listaGiocatori;
 	private Mazzo _mazzoTotale;
 	private Boolean _thereIsHumanPlayer;
+	private Boolean _tipologiaAlgoritmo = false;
+	
+	//getter e setter
+	public Boolean getTipologiaAlgoritmo() {
+		return _tipologiaAlgoritmo;
+	}
+
+	public void setTipologiaAlgoritmo(Boolean _tipologiaAlgoritmo) {
+		this._tipologiaAlgoritmo = _tipologiaAlgoritmo;
+	}
 
 	//getter and setter
 	public List<Object> getListaGiocatori() {
@@ -38,6 +48,13 @@ public class GiocoUno {
 		this._listaGiocatori.add(giocatoreDaAggiungere);
 	}
 	
+	//costruttore classe gioco
+    public GiocoUno(){
+        this._listaGiocatori = new ArrayList<Object>();
+        this._mazzoTotale = new Mazzo();
+        this._thereIsHumanPlayer = false;
+    }
+    
 	//genera le carte da uno
 	public void GeneraCarte(){
 		//creo carte rosse 
@@ -88,7 +105,7 @@ public class GiocoUno {
 		//}else{//se false non sono presenti giocatori umani e quindi solo giocatori cpu
 			//faccio pescare ad ogni giocatore una carta
 			for(int i = 0; i < this._listaGiocatori.size(); i++){
-				((Giocatore)this._listaGiocatori.get(i)).PescaCartaDalMazzo();
+				((GiocatoreCPU)this._listaGiocatori.get(i)).AggiungeUnaCartaAlMazzo();
 			}
 			//ora devo decidere quale è la carta più alta
 			//sapendo che ogni giocatore posiede una sola carta in mano creo una lista dove l'indice corrisponde al giocatore e l'elemento al tipo della carta
@@ -127,6 +144,8 @@ public class GiocoUno {
 				listaRiordinata.add(this._listaGiocatori.get(i));
 			}
 			//ora possiedo lista ordinata dell'ordine di gioco dei giocatori CPU
+			//devo settare questa lista come lista giocatori
+            this._listaGiocatori = listaRiordinata;
 	//	}
 	}
 	
@@ -154,11 +173,15 @@ public class GiocoUno {
 		//ora ho la lista di giocatori ordinata e posso iniziare effettivamente il gioco. faccio pescare ad ogni giocatore tutte le carte
 		for(int i = 0; i < this._listaGiocatori.size(); i++){
 			if(this._listaGiocatori.get(i).getClass() == Giocatore.class){
+				((Giocatore)this._listaGiocatori.get(i)).EliminaCarteInMano();
 				((Giocatore)this._listaGiocatori.get(i)).PescaCarteIniziali();
 			}else{
+				((GiocatoreCPU)this._listaGiocatori.get(i)).EliminaCarteInMano();
 				((GiocatoreCPU)this._listaGiocatori.get(i)).PescaCarteIniziali();
 			}
 		}
+		//metto una carta in cima al mazzo carte scoperte
+        this._mazzoTotale.ScartaPrimaCartaInizioPartita();
 	}
 	
 	private void CreaGiocatoriCPU(int numeroDaCreare){
@@ -204,8 +227,6 @@ public class GiocoUno {
 							}
 							//fa saltare il turno all'avversaria quindi ritocca a me e quindi non esco dal ciclo
 						}else{
-							//pesco una carta e passo il turno
-							giocatoreAttuale.PescaCartaDalMazzo();
 							//passo il turno senza fare nulla e quindi uscire dal while
 							possoPassareIlTurno = true;
 						}
