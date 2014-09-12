@@ -2,12 +2,16 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import controller.Gioco;
 
 public class GiocoUno {
 	private List<Object> _listaGiocatori;
 	private Mazzo _mazzoTotale;
 	private Boolean _thereIsHumanPlayer;
-	private Boolean _tipologiaAlgoritmo = false;
+    private Boolean _tipologiaAlgoritmo = false;
+    private String _coloreCartaInGioco = "";
+    private Boolean _giocoFinito = false;
+    private Gioco _controller;
 	
 	//getter e setter
 	public Boolean getTipologiaAlgoritmo() {
@@ -38,23 +42,36 @@ public class GiocoUno {
 	public Boolean getThereIsHumanPlayer() {
 		return _thereIsHumanPlayer;
 	}
+        
+    public String getColoreCartaInGioco() {
+		return _coloreCartaInGioco;
+	}
 
 	public void setThereIsHumanPlayer(Boolean _thereIsHumanPlayer) {
 		this._thereIsHumanPlayer = _thereIsHumanPlayer;
 	}
 
+    public void setColoreCartaInGioco(String _coloreCartaInGioco) {
+		this._coloreCartaInGioco = _coloreCartaInGioco;
+	}
+        
 	//agginge un giocatore alla lista
 	public void AddGiocatore(Object giocatoreDaAggiungere){
 		this._listaGiocatori.add(giocatoreDaAggiungere);
 	}
-	
-	//costruttore classe gioco
-    public GiocoUno(){
+        
+    public Gioco getControllerGioco() {
+		return _controller;
+	}
+        
+    //costruttore classe gioco
+    public GiocoUno(Gioco controller){
         this._listaGiocatori = new ArrayList<Object>();
         this._mazzoTotale = new Mazzo();
         this._thereIsHumanPlayer = false;
+        this._controller = controller;
     }
-    
+	
 	//genera le carte da uno
 	public void GeneraCarte(){
 		//creo carte rosse 
@@ -99,60 +116,59 @@ public class GiocoUno {
 
 	//metodo usato per scegliere ordine partenza giocatori
 	public void ScegliOrdinePartenzaGioco(){
-		//if(this._thereIsHumanPlayer){//se true sono presenti giocatori umani
-			//devo far pescare ad ogni giocatore una carta
-			
-		//}else{//se false non sono presenti giocatori umani e quindi solo giocatori cpu
-			//faccio pescare ad ogni giocatore una carta
-			for(int i = 0; i < this._listaGiocatori.size(); i++){
-				((GiocatoreCPU)this._listaGiocatori.get(i)).AggiungeUnaCartaAlMazzo();
-			}
-			//ora devo decidere quale è la carta più alta
-			//sapendo che ogni giocatore posiede una sola carta in mano creo una lista dove l'indice corrisponde al giocatore e l'elemento al tipo della carta
-			//le carte azione valgono zero. Le carte numerate da 0 a 9 valgono da 0 a 9
-			//creo lista appoggio dove salvo il tipo delle carte
-			List<String> listaValoreCartePescate = new ArrayList<String>();			
-			for(int i = 0; i < this._listaGiocatori.size(); i++){
-				listaValoreCartePescate.add(((Giocatore)this._listaGiocatori.get(i)).getCarteInMano().get(0).getTipocarta());
-			}
-			//creo lista aiuto dove salvo il punteggio delle carte
-			List<Integer> listaPunteggioCartePescate = new ArrayList<Integer>();
-			for(int i = 0; i < listaValoreCartePescate.size(); i++){
-				//se è carta azione assegno valore zero
-				String valoreAttuale = listaValoreCartePescate.get(i);
-				if(valoreAttuale == "+4" || valoreAttuale == "+2" || valoreAttuale == "cambia colore" || valoreAttuale == "inverti giro" || valoreAttuale == "stop"){
-					listaPunteggioCartePescate.add(0);
-				}else{//altrimenti assegno il valore della carta
-					listaPunteggioCartePescate.add(Integer.parseInt(valoreAttuale));
-				}
-			}
-			//ora devo trovare il valore più alto della lista
-			int valoreAlto = -1;//assegno valore minimo di cui sicuramente qualcuno supererà
-			for(int i = 0; i < listaPunteggioCartePescate.size(); i++){
-				if(listaPunteggioCartePescate.get(i) > valoreAlto){
-					valoreAlto = listaPunteggioCartePescate.get(i);
-				}
-			}
-			//trovo indice corrispondente a valore alto e quindi giocatore che inizierà per primo
-			int indiceValoreAlto = listaPunteggioCartePescate.indexOf(valoreAlto);
-			//riarrangio lista giocatori con nuovo ordine. Si parte da indice più alto e tutti gli altri a seguire
-			List<Object> listaRiordinata = new ArrayList<Object>();
-			for(int i = indiceValoreAlto; i< this._listaGiocatori.size(); i++){
-				listaRiordinata.add(this._listaGiocatori.get(i));
-			}
-			for(int i = 0; i< indiceValoreAlto; i++){
-				listaRiordinata.add(this._listaGiocatori.get(i));
-			}
-			//ora possiedo lista ordinata dell'ordine di gioco dei giocatori CPU
-			//devo settare questa lista come lista giocatori
-            this._listaGiocatori = listaRiordinata;
-	//	}
+        //devo far pescare ad ogni giocatore una carta
+        //la faccio pescare io la carta al giocatore umano senza che lui intervenga
+        //faccio pescare ad ogni giocatore una carta
+        for(int i = 0; i < this._listaGiocatori.size(); i++){
+                ((Giocatore)this._listaGiocatori.get(i)).AggiungeUnaCartaAlMazzo();
+        }
+        //ora devo decidere quale è la carta più alta
+        //sapendo che ogni giocatore posiede una sola carta in mano creo una lista dove l'indice corrisponde al giocatore e l'elemento al tipo della carta
+        //le carte azione valgono zero. Le carte numerate da 0 a 9 valgono da 0 a 9
+        //creo lista appoggio dove salvo il tipo delle carte
+        List<String> listaValoreCartePescate = new ArrayList<String>();			
+        for(int i = 0; i < this._listaGiocatori.size(); i++){
+                listaValoreCartePescate.add(((Giocatore)this._listaGiocatori.get(i)).getCarteInMano().get(0).getTipocarta());
+        }
+        //creo lista aiuto dove salvo il punteggio delle carte
+        List<Integer> listaPunteggioCartePescate = new ArrayList<Integer>();
+        for(int i = 0; i < listaValoreCartePescate.size(); i++){
+                //se è carta azione assegno valore zero
+                String valoreAttuale = listaValoreCartePescate.get(i);
+                if(valoreAttuale == "+4" || valoreAttuale == "+2" || valoreAttuale == "cambia colore" || valoreAttuale == "inverti giro" || valoreAttuale == "stop"){
+                        listaPunteggioCartePescate.add(0);
+                }else{//altrimenti assegno il valore della carta
+                        listaPunteggioCartePescate.add(Integer.parseInt(valoreAttuale));
+                }
+        }
+        //ora devo trovare il valore più alto della lista
+        int valoreAlto = -1;//assegno valore minimo di cui sicuramente qualcuno supererà
+        for(int i = 0; i < listaPunteggioCartePescate.size(); i++){
+                if(listaPunteggioCartePescate.get(i) > valoreAlto){
+                        valoreAlto = listaPunteggioCartePescate.get(i);
+                }
+        }
+        //trovo indice corrispondente a valore alto e quindi giocatore che inizierà per primo
+        int indiceValoreAlto = listaPunteggioCartePescate.indexOf(valoreAlto);
+        //riarrangio lista giocatori con nuovo ordine. Si parte da indice più alto e tutti gli altri a seguire
+        List<Object> listaRiordinata = new ArrayList<Object>();
+        for(int i = indiceValoreAlto; i< this._listaGiocatori.size(); i++){
+                listaRiordinata.add(this._listaGiocatori.get(i));
+        }
+        for(int i = 0; i< indiceValoreAlto; i++){
+                listaRiordinata.add(this._listaGiocatori.get(i));
+        }
+        //ora possiedo lista ordinata dell'ordine di gioco dei giocatori CPU
+        //devo settare questa lista come lista giocatori
+        this._listaGiocatori = listaRiordinata;
+        //avviso il controller quale dei due iniza il gioco
+        this._controller.avvisoInizioGioco(((Giocatore)this._listaGiocatori.get(0)).getNome());
 	}
 	
 	//metodo utilizzato per iniziare il gioco
 	public void IniziaGioco(){
 		//chiedo se cpu vs cpu o cpu vs human
-		this._thereIsHumanPlayer = this.StubPresenzaGiocatoreUmano();
+		//this._thereIsHumanPlayer = this.StubPresenzaGiocatoreUmano();
 		if(this._thereIsHumanPlayer){
 			//chiedere nome al giocatore
 			String nomeGiocatoreUmano = this.StubNomeGiocatoreUmano();
@@ -171,17 +187,23 @@ public class GiocoUno {
 		//ora bisogna scegliere l'ordine di partenza dei giocatori
 		this.ScegliOrdinePartenzaGioco();
 		//ora ho la lista di giocatori ordinata e posso iniziare effettivamente il gioco. faccio pescare ad ogni giocatore tutte le carte
+                //però prima elimino le carte usate per stabilire l'ordine
 		for(int i = 0; i < this._listaGiocatori.size(); i++){
 			if(this._listaGiocatori.get(i).getClass() == Giocatore.class){
-				((Giocatore)this._listaGiocatori.get(i)).EliminaCarteInMano();
+                                ((Giocatore)this._listaGiocatori.get(i)).EliminaCarteInMano();
 				((Giocatore)this._listaGiocatori.get(i)).PescaCarteIniziali();
 			}else{
-				((GiocatoreCPU)this._listaGiocatori.get(i)).EliminaCarteInMano();
+                                ((GiocatoreCPU)this._listaGiocatori.get(i)).EliminaCarteInMano();
 				((GiocatoreCPU)this._listaGiocatori.get(i)).PescaCarteIniziali();
 			}
 		}
-		//metto una carta in cima al mazzo carte scoperte
+        //metto una carta in cima al mazzo carte scoperte
         this._mazzoTotale.ScartaPrimaCartaInizioPartita();
+        System.out.println(this._mazzoTotale.CartaInCima().getTipocarta() + " " + this._mazzoTotale.CartaInCima().getColore());
+        //la mostro a view
+        this._controller.mostraCartaMazzoScoperto(this._mazzoTotale.CartaInCima());
+        //setto la variabile con il colore della carta attualmente in gioco
+        this._coloreCartaInGioco = this._mazzoTotale.getCarteScartate().get(0).getColore();
 	}
 	
 	private void CreaGiocatoriCPU(int numeroDaCreare){
@@ -198,58 +220,238 @@ public class GiocoUno {
 	public void ProseguiGiocoCasoGiocatoriSoloCPU(){
 		//azioni che tutti i giocatori devono effettuare
 		Boolean partitaConclusa = false; // variabile d'appoggio 
+        Boolean mazzoFinito = false;
 		while(!partitaConclusa){
 			for(int i = 0; i < this._listaGiocatori.size(); i++){
 				if(!partitaConclusa){ //se finisce il giocatore uno non serve che il giocatore due giochi quindi dato che sono su un for non gli faccio fare nulla, così esce dal ciclo for e si ferma con il while uscendo.
 					GiocatoreCPU giocatoreAttuale = ((GiocatoreCPU)this._listaGiocatori.get(i)); //riferimento giocatore attuale
-					Boolean possoPassareIlTurno = false; // variabile d'appoggio per uscire dal ciclo while. Valida per gioco a 2 giocatori come deciso a priori
-					while(!possoPassareIlTurno){
-						//aggiungo alle carte in tavola la carta giocata dal gioatore cpu
-						Carta cartaDaGiocare = giocatoreAttuale.GiocaCarta();
-						//se ritorna null vuol dire che devo pescare e passare il turno altrimenti devo giocare
-						if(cartaDaGiocare != null){
-							//butto la carta
-							this._mazzoTotale.getCarteScartate().add(cartaDaGiocare);
-							//se rimango con una carta sola in mano dopo aver giocato questa carta devo dichiarare UNO
-							if(giocatoreAttuale.getCarteInMano().size() == 1){
-								giocatoreAttuale.DichiaraUNO();
-							}
-							//se invece rimango con zero carte ho vinto la partita e devo uscire dal ciclo while e dal ciclo for e dichiarare la vittoria
-							if(giocatoreAttuale.getCarteInMano().isEmpty()){
-								giocatoreAttuale.DichiaraVittoria();
-								partitaConclusa = true; // setto a vero la variabile che ci farà uscire da tutti i cicli
-							}
-							//dato che il programma sviluppa solo due giocatori controllo se la carta giocata fa saltare il turno all'avversario
-							//perchè in quel caso tocca ancora a me
-							if(!cartaDaGiocare.getCausaSaltoTurno()){
-								//non causa salta turno quindi tocca all'avversario e posso uscire dal while
-								possoPassareIlTurno = true;
-							}
-							//fa saltare il turno all'avversaria quindi ritocca a me e quindi non esco dal ciclo
-						}else{
-							//passo il turno senza fare nulla e quindi uscire dal while
-							possoPassareIlTurno = true;
-						}
+                    //aggiungo alle carte in tavola la carta giocata dal gioatore cpu
+                    Carta cartaDaGiocare = giocatoreAttuale.GiocaCarta(this._coloreCartaInGioco);
+                    //se ritorna null vuol dire che devo pescare e passare il turno altrimenti devo giocare
+                    if(cartaDaGiocare != null){
+                        //devo verificare che il mazzo non sia finito
+                        if(cartaDaGiocare.getTipocarta() == "NULL"){
+                            //mazzo finito
+                            mazzoFinito = true; //è finito il mazzo, finito il gioco
+                            partitaConclusa = true; // setto a vero la variabile che ci farà uscire da tutti i cicli
+                        }else{
+                            //butto la carta
+                            this._mazzoTotale.getCarteScartate().add(cartaDaGiocare);
+                            //se rimango con una carta sola in mano dopo aver giocato questa carta devo dichiarare UNO
+                            if(giocatoreAttuale.getCarteInMano().size() == 1){
+                                    giocatoreAttuale.DichiaraUNO();
+                                    System.out.println(giocatoreAttuale.getNome() + " UNO!");
+                            }
+                            //se invece rimango con zero carte ho vinto la partita e devo uscire dal ciclo while e dal ciclo for e dichiarare la vittoria
+                            if(giocatoreAttuale.getCarteInMano().isEmpty()){
+                                    giocatoreAttuale.DichiaraVittoria();
+                                    System.out.println(giocatoreAttuale.getNome() + " Vittoria!");
+                                    partitaConclusa = true; // setto a vero la variabile che ci farà uscire da tutti i cicli
+                            }
+                        }
+
 					}
 				}
 			}
 		}
+	    //controllo se sono uscito per aver finito il mazzo o ho effettivamente vinto
+	    if(mazzoFinito){//è finito il mazzo
+	        this.CheckRisultatoConMazzoFinito();
+	    }
 		
 	}
 	
 	public void ProseguiGiocoCasoGiocatoriAncheUmani(){
-		
+        //ora il giocatore umano si trova con le carte in mano, la carta sul tavolo e sa se tocca a lui o al pc ad iniziare a giocare
+        //controllo se tocca ad umano o a pc ad inizare
+        if(this._listaGiocatori.get(0).getClass() == GiocatoreCPU.class){
+            //se il primo giocatore è il computer lo faccio giocare
+            this.AzioneCPU((GiocatoreCPU)this._listaGiocatori.get(0));
+        }else{
+            //altrimenti segnalo che è il turno dell'umano a giocare
+            this._controller.avvisaTurnoUmano();
+        }
 	}
 	
+        //azioni svolte dall'intelligenza artificiale durante il gioco
+	private void AzioneCPU(GiocatoreCPU giocatoreAttuale){
+        //aggiungo alle carte in tavola la carta giocata dal gioatore cpu
+        Carta cartaDaGiocare = giocatoreAttuale.GiocaCarta(this._coloreCartaInGioco);
+        //se ritorna null vuol dire che devo pescare e passare il turno altrimenti devo giocare
+        if(cartaDaGiocare != null){
+            //devo verificare che il mazzo non sia finito
+            if(cartaDaGiocare.getTipocarta() == "NULL"){
+                //mazzo finito
+                this.CheckRisultatoConMazzoFinito();
+            }else{
+                //butto la carta
+                this._mazzoTotale.getCarteScartate().add(cartaDaGiocare);
+                //se rimango con una carta sola in mano dopo aver giocato questa carta devo dichiarare UNO
+                if(giocatoreAttuale.getCarteInMano().size() == 1){
+                        giocatoreAttuale.DichiaraUNO();
+                        System.out.println(giocatoreAttuale.getNome() + " UNO!");
+                }
+                //se invece rimango con zero carte ho vinto la partita e devo uscire dal ciclo while e dal ciclo for e dichiarare la vittoria
+                if(giocatoreAttuale.getCarteInMano().isEmpty()){
+                        giocatoreAttuale.DichiaraVittoria();
+                        System.out.println(giocatoreAttuale.getNome() + " Vittoria!");
+                        //fermo il gioco
+                        this._giocoFinito = true;
+                }
+            }
+        }
+        
+    }
+        
+    //devo decidere chi ha vinto. Secondo le regole vince chi ha meno carte
+    private void CheckRisultatoConMazzoFinito(){
+        //devo decidere chi ha vinto. Secondo le regole vince chi ha meno carte
+        int numeroCarteGiocatorePosizioneUno = ((Giocatore)this._listaGiocatori.get(0))._carteInMano.size();
+        int numeroCarteGiocatorePosizioneDue = ((Giocatore)this._listaGiocatori.get(1))._carteInMano.size();
+        if(numeroCarteGiocatorePosizioneUno < numeroCarteGiocatorePosizioneDue){
+            //vince il giocatore in posizione 0
+            ((GiocatoreCPU)this._listaGiocatori.get(0)).DichiaraVittoria("Vittoria per minor numero di carte!");
+            System.out.println(((GiocatoreCPU)this._listaGiocatori.get(0)).getNome() + " Vittoria per minor numero di carte!");
+        }else{
+            if(numeroCarteGiocatorePosizioneUno > numeroCarteGiocatorePosizioneDue){
+                //vince il giocatore in posizione 1
+                ((GiocatoreCPU)this._listaGiocatori.get(1)).DichiaraVittoria("Vittoria per minor numero di carte!");
+                System.out.println(((GiocatoreCPU)this._listaGiocatori.get(1)).getNome() + " Vittoria per minor numero di carte!");
+            }else{
+                //pareggio
+                this._controller.dichiaraVittoria("", "Pareggio stesso numero di carte!");
+                System.out.println("Pareggio stesso numero di carte!");
+            }
+        }
+    }
 	
+    //azioni dell'umano. Butta carta
+    public void ButtaCartaAzioneUmana(Carta cartaToltaDaLista){
+        //ho la carta tolta dalla lista e devo inserirle nelle carte girate.
+        //sistemo la carta sul mazzo scoperto
+        this._mazzoTotale.getCarteScartate().add(cartaToltaDaLista);
+        //aggiunta la carta del mazzo devo passare il turno e tocca al pc ora
+        //prima di buttare devo controllare che se ho buttato un jolly devo decidere quale sarà il prossimo colore
+        if(cartaToltaDaLista.getColore() == "Jolly"){
+            this._coloreCartaInGioco = this._controller.sceltaColore();
+        }
+        //devo trovar el'altro giocatore
+        //so per certo che si con solo 2 giocatori quindi è semplice la storia
+        GiocatoreCPU altroGiocatore = null;
+        if(this._listaGiocatori.get(0).getClass() == GiocatoreCPU.class){
+            altroGiocatore = (GiocatoreCPU) this._listaGiocatori.get(0);
+        }else{
+            altroGiocatore = (GiocatoreCPU) this._listaGiocatori.get(1);
+        }
+        //ora che ho l'altro giocatore chiamo la sua mossa
+        this.AzioneCPU(altroGiocatore);
+        //fatta la sua mossa devo controllare se ha buttato giu carte che mi fanno saltare il turno o meno
+        boolean risultato = this.controllaAzioneFattaDaCPUPrimaDiUmano();
+        while(!risultato){
+            //se è false l'umano passa il turno
+            //avviso che salto il turno
+            this._controller.avvisoSaltoTurno();
+            //tocca di nuovo al pc
+            this.AzioneCPU(altroGiocatore);
+        }
+    }
+        
+    //azione umano. Pesca carta e passa il turno
+    public void PassaIlTurnoAzioneUmana(Carta cartaPescata){
+        //se ritorna null vuol dire che il mazzo è finito
+        if(cartaPescata != null){
+            //aggiongo la carta al giocatore umano
+            Giocatore giocatoreUmano = null;
+            GiocatoreCPU altroGiocatore = null;
+            if(this._listaGiocatori.get(0).getClass() == Giocatore.class){
+                giocatoreUmano = (Giocatore) this._listaGiocatori.get(0);
+                altroGiocatore = (GiocatoreCPU) this._listaGiocatori.get(1);
+            }else{
+                giocatoreUmano = (Giocatore) this._listaGiocatori.get(1);
+                altroGiocatore = (GiocatoreCPU) this._listaGiocatori.get(0);
+            }
+            //aggiungo carta
+            giocatoreUmano._carteInMano.add(cartaPescata);
+            //faccio giocare il pc
+            this.AzioneCPU(altroGiocatore);
+            //fatta la sua mossa devo controllare se ha buttato giu carte che mi fanno saltare il turno o meno
+            boolean risultato = this.controllaAzioneFattaDaCPUPrimaDiUmano();
+            while(!risultato){
+                //se è false l'umano passa il turno
+                //avviso che salto il turno
+                this._controller.avvisoSaltoTurno();
+                //tocca di nuovo al pc
+                this.AzioneCPU(altroGiocatore);
+            }
+        }else{
+            //mazzo finito
+            this.CheckRisultatoConMazzoFinito();
+        }
+    }
+        
+    public boolean controllaAzioneFattaDaCPUPrimaDiUmano(){
+        //giocature umano
+        Giocatore giocatoreUmano = null;
+        //trovo riferimento giocatore umano
+        if(this._listaGiocatori.get(0).getClass() == Giocatore.class){
+            giocatoreUmano = (Giocatore) this._listaGiocatori.get(0);
+        }else{
+            giocatoreUmano = (Giocatore) this._listaGiocatori.get(1);
+        }
+        Carta CimaMazzo = this._mazzoTotale.CartaInCima();
+        //se è già stata usata (cioè l'avversario ha saltato il proprio turno e tocca a me) setto a false il controllo e proseguo tranquillamente nel gioco
+        if(CimaMazzo.getUsata()){
+                CimaMazzo.setUsata(false);
+                //posso giocare tranquillamente
+                return true;
+        }else{
+            //se non è già stata usata la uso e la setto come usata (questo solo nel caso che la carta sia un +4 o cambia colore )
+            CimaMazzo.setUsata(true);
+            if(CimaMazzo.getColore() == "Jolly"){//se è un +4 o cambia colore cambio il colore e in caso pesco le carte
+                if(CimaMazzo.getTipocarta() == "+4"){ //se è +4 pesco 4 carte
+                        //devo avvisare che devo pescare 4 carte
+                        this._controller.avvisoPescareNCarte(4);
+                        for(int i = 0 ; i < 4; i++){
+                            Carta cartaPescata = giocatoreUmano.PescaCartaDalMazzo();
+                            if(cartaPescata != null) {
+                                giocatoreUmano._carteInMano.add(cartaPescata);
+                            }else{
+                                //se è null ho finito carte del mazzo
+                                this.CheckRisultatoConMazzoFinito();
+                            }
+                            
+                        }
+                }
+            }
+            //ora devo controllare se è un +2 così pesco 2 carte
+            if(CimaMazzo.getTipocarta() == "+2"){ //se è +4 pesco 4 carte
+                    this._controller.avvisoPescareNCarte(2);
+                    for(int i = 0 ; i < 2; i++){
+                        //devo avvisare che devo pescare due carte
+                            Carta cartaPescata = giocatoreUmano.PescaCartaDalMazzo();
+                            if(cartaPescata != null) {
+                                giocatoreUmano._carteInMano.add(cartaPescata);
+                            }else{
+                                //se è null ho finito carte del mazzo
+                                this.CheckRisultatoConMazzoFinito();
+                            }
+                    }
+            }
+            //devo controllare se è una carta che causa il salto di turno. Se lo è io non faccio nulla e salto il turno
+            //se è una carta normale esco dall'if e proseguo con il gioco
+            if(CimaMazzo.getCausaSaltoTurno()){
+                    //ritorno false cosi passo il turno
+                    return false;
+            }else{
+                //non serve la gestione di usata o meno quindi ritorno a false il controllo
+                CimaMazzo.setUsata(false);
+                return true;
+            }
+        }
+    }
 	
-	
-	//metodo da implementare come interfaccia grafica
-	private Boolean StubPresenzaGiocatoreUmano(){
-		return false;
-	}
 	//metodo da implementare come interfaccia grafica
 	private String StubNomeGiocatoreUmano(){
-		return "Alessandro";
+		return "Umano";
 	}
 }

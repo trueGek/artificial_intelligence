@@ -4,37 +4,93 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GiocatoreCPU extends Giocatore {
-	
+    
 	public GiocatoreCPU(String nomeCorrente, GiocoUno riferimentoGiocoUno) {
 		super(nomeCorrente, riferimentoGiocoUno);
 		// TODO Auto-generated constructor stub
 	}
 
 	//ritorna la carta scelta da giocare utilizzando l'algoritmo minimax
-	private Carta MinimaxCartaScelta(){
+	private Carta AlgoritmoCartaScelta(Boolean isMinimax, String ultimoColoreValido){
 		//devo valutare il massimo delle prime giocate possibili da me
 		//in imput devo avere lo stato del gioco attuale quindi le carte in mano e le carte in tavola
 		//quindi devo clonare le due liste per poterle modificare senza effettuare cambiamenti
 		List<Carta> carteInManoMax = this.CloneListaCarte(this._carteInMano);
 		List<Carta> carteInTavolaMinimax = this.CloneListaCarte(this._riferimentoGiocoUno.getMazzoTotale().getCarteScartate());
-		//devo anche ipotizzare le carte che ha in mano il mio avversario. Il numero lo so, ma il valore no, quindi devo
-		//generare le carte in mano all'avversario secondo le probabilità di presenza di quelle carte
-		List<Carta> carteInManoMin = this.GeneraCarteAvversario(1); //da settare mumero corretto <------------------------------------------------------------------
-		//eseguo algoritmo minimax. Mi restituisce il valore del ramo da scegliere
-		int risultato = this.TurnoDiMax(carteInManoMax, carteInManoMin, carteInTavolaMinimax);
-		//restituisco la carta prescelta o null se passo il turno pescando una carta
-		return this.CartaSceltaMinimax(carteInManoMax, risultato, carteInTavolaMinimax);	
+        //devo clonare anche il mazzo perchè non posso modificarlo.
+        Mazzo mazzoDaUsare = this._riferimentoGiocoUno.getMazzoTotale().ClonaMazzo();
+        //mazzo reset. ogni volta che eseguo il mimimax o la potatura devo resettare a questa condizione iniziale il mazzo
+        Mazzo mazzoRESET = this._riferimentoGiocoUno.getMazzoTotale().ClonaMazzo();
+        //dato che non conosco le carte dell'avversario devo calcolare una probabilità per ogni ordine di carte
+        //calcolo il valor eminimax di ogni azione in ogni ordine delle carte e quindi scelgo l'azione con il valore aspettato più alto
+        //quindi ciclo n volte e vedo quale risultato viene riestituito più volte
+        //creo lista appoggio integer che conta quante volte è stata usata quella carta della lista delle mie carte in mano
+        Integer[] vettoreConteggioUsoCarta = new Integer[carteInManoMax.size() + 1];
+        //azzero tutte le posizioni
+        for(int i = 0 ; i < carteInManoMax.size() + 1; i++){
+            vettoreConteggioUsoCarta[i] = 0;
+        }
+        //devo controllare se la carta in cambo è segnata usata o meno. perchè devo ricordarmerlo altrimenti il minimax impazzisce perchè la cambia
+        //un ciclo si e uno no
+        Boolean ricordoUsata = false;
+        if(carteInTavolaMinimax.get(carteInTavolaMinimax.size() -1 ).getUsata()){
+            ricordoUsata = true;
+        }
+        for(int i = 0 ; i < 50; i++){
+            //devo anche ipotizzare le carte che ha in mano il mio avversario. Non conosco ne quante carte ha in mano l'avversario ne quali sono quindi devo
+            //generare le carte in mano all'avversario secondo le probabilità di presenza di quelle carte
+            //ipotizzo che in mano abbia esattamente le mie stesse carte
+            List<Carta> carteInManoMin = this.GeneraCarteAvversario(carteInManoMax.size(), mazzoDaUsare); 
+            //se ricordo usata è tru devo controllare che sia sempre true ad ogni passo
+            if(ricordoUsata) carteInTavolaMinimax.get(carteInTavolaMinimax.size() -1 ).setUsata(true);
+            //eseguo algoritmo minimax. Mi restituisce il valore del ramo da scegliere
+            int risultato = this.TurnoDiMax(carteInManoMax, carteInManoMin, carteInTavolaMinimax, mazzoDaUsare, -10000, 10000, isMinimax, -1, ultimoColoreValido);
+            //ottengo index della carta scelta da giocare
+            Integer ris = this.CartaSceltaMinimax(carteInManoMax, risultato, carteInTavolaMinimax, ultimoColoreValido);
+            //se ritorna null devo pescare una carta quindi uso size+1 per tenerlo conto
+            if(ris == null){
+                vettoreConteggioUsoCarta[carteInManoMax.size()]++;
+            }else{
+                vettoreConteggioUsoCarta[ris]++;
+            }
+            //ogni volta devo effettuare il minimax o potatura con il mazzo resettato alla condizione iniziale
+            mazzoDaUsare.ResetMazzo(mazzoRESET);
+        }
+        //devo trovare quale è la scelta con maggior peso. se ce ne sono di uguali prendo la prima
+        int valoreMassimo = -2000;
+        for(int i = 0 ; i < carteInManoMax.size() + 1; i++){
+            if(vettoreConteggioUsoCarta[i] > valoreMassimo) valoreMassimo = vettoreConteggioUsoCarta[i];
+        }
+        int i = 0;
+        while(vettoreConteggioUsoCarta[i] < carteInManoMax.size() + 1 & valoreMassimo != vettoreConteggioUsoCarta[i]){
+            i++;
+        }
+        //controllo se è il null e se lo è lo restituisco
+        if(i == this._carteInMano.size()){
+            return null;
+        }
+        //sistemo mazzo totale carte
+        this._riferimentoGiocoUno.getMazzoTotale().ResetMazzo(mazzoRESET);
+		//restituisco la carta prescelta 
+		return 	this._carteInMano.get(i);
+
 	}
 	//parte max di minimax
-	private int TurnoDiMax(List<Carta> carteInManoMax, List<Carta> carteInManoMin, List<Carta> carteInTavola){
+	private int TurnoDiMax(List<Carta> carteInManoMax, List<Carta> carteInManoMin, List<Carta> carteInTavola, Mazzo mazzoCarteTotali, int alfa, int beta, Boolean isMinimax, int livello, String ultimoColoreValido){
+        //aumento di 1 il livello dell'albero
+        livello++;
 		//se questa è l'ultima azione da fare allora restituisci valore funzione obiettivo.
-		//setto valore funzione obiettivo a +1 quando vince
+		//setto valore funzione obiettivo a +10 quando vince
 		if(this.TerminatoAlbero(carteInManoMax)){
-			return 1;
+			return 100;
 		}
 		//controllo le carte gioabili perche se sono zero devo passare il turno e pescare una carta quindi richiamare il mio avversario sulla sua carta giocata
 		//devo controllare anche se l'ultima carta giocata è stata un più due o più quattro o salta turno o inverti giro perchè io salto il turno e tocca di nuovo all'avversario
 		Carta ultimaCartaGiocata = carteInTavola.get(carteInTavola.size() -1 );
+                //se voglio limitare la profondità ad un livello prefissato invece che esplorare il tutto utilizzo questo codice
+                if(this.TestTaglio(livello)){
+			return this.ValutaMossa(ultimaCartaGiocata, carteInManoMax, carteInManoMin, true);
+		}
 		//se è già stata usata (cioè l'avversario ha saltato il proprio turno e tocca a me) setto a false il controllo e proseguo tranquillamente nel gioco
 		if(ultimaCartaGiocata.getUsata()){
 			ultimaCartaGiocata.setUsata(false);
@@ -44,23 +100,59 @@ public class GiocatoreCPU extends Giocatore {
 			if(ultimaCartaGiocata.getColore() == "Jolly"){//se è un +4 o cambia colore cambio il colore e in caso pesco le carte
 				if(ultimaCartaGiocata.getTipocarta() == "+4"){ //se è +4 pesco 4 carte
 					for(int i = 0 ; i < 4; i++){
-						carteInManoMax.add(this.PescaCartaDalMazzo());
+                        //potrei ritornare null perchè il mazzo è finito
+                        Carta cartaPescata = this.PescaCartaDalMazzo();
+                        if(cartaPescata != null){
+                            carteInManoMax.add(cartaPescata);
+                        }else{
+                            //ritorna null. vuol dire che il mazzo è finito. devo vedere chi ha vinto. 
+                            //vince chi ha meno carte in mano
+                            return this.CheckNumeroCarteInManoAllaFineDelMazzo(true);
+                        }
 					}
 				}
-				//sia che sia +4 che cambia colore devo cambiare il colore
-				ultimaCartaGiocata.setColore(this.ScegliColore(carteInManoMax));
 			}
 			//ora devo controllare se è un +2 così pesco 2 carte
 			if(ultimaCartaGiocata.getTipocarta() == "+2"){ //se è +4 pesco 4 carte
 				for(int i = 0 ; i < 2; i++){
-					carteInManoMax.add(this.PescaCartaDalMazzo());
+					//potrei ritornare null perchè il mazzo è finito
+                    Carta cartaPescata = this.PescaCartaDalMazzo();
+                    if(cartaPescata != null){
+                        carteInManoMax.add(cartaPescata);
+                    }else{
+                        //ritorna null. vuol dire che il mazzo è finito. devo vedere chi ha vinto. 
+                        //vince chi ha meno carte in mano
+                        return this.CheckNumeroCarteInManoAllaFineDelMazzo(true);
+                    }
 				}
 			}
 			//devo controllare se è una carta che causa il salto di turno. Se lo è io non faccio nulla e salto il turno
 			//se è una carta normale esco dall'if e proseguo con il gioco
 			if(ultimaCartaGiocata.getCausaSaltoTurno()){
+                //mi salvo tutte le liste per risistemarle al ritorno dalla ricorsione
+                List<Carta> carteInManoMinCopia = this.CloneListaCarte(carteInManoMin);
+                List<Carta> carteInManoMaxCopia = this.CloneListaCarte(carteInManoMax);
+                List<Carta> carteInTavolaCopia = this.CloneListaCarte(carteInTavola);
+                //String coloreAttuale = this._coloreDiGioco;
+                Mazzo mazzoCarteCopia = mazzoCarteTotali.ClonaMazzo();
 				//devo saltare il turno e quindi richiamare min sempre sull'ultima carta giocata
-				int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola); 
+				int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola, mazzoCarteTotali, alfa, beta, isMinimax, livello, ultimoColoreValido); 
+                //restituisco alle liste le loro posizioni originali
+                this.CopiaListaCarte(carteInTavola, carteInTavolaCopia);
+                this.CopiaListaCarte(carteInManoMin, carteInManoMinCopia);
+                this.CopiaListaCarte(carteInManoMax, carteInManoMaxCopia);
+                //this._coloreDiGioco = coloreAttuale;
+                mazzoCarteTotali.ResetMazzo(mazzoCarteCopia);
+                //controllo se sto facendo potatura alfa beta o no
+                if(!isMinimax){//se è false sto facendo potatura quindi inserisco codice per potatura
+                    if(valRestituitoAzioneGiocata >= beta){
+                        return valRestituitoAzioneGiocata;
+                    }
+                    //alfa <- max(alfa,v)
+                    if(valRestituitoAzioneGiocata >= alfa){
+                        alfa = valRestituitoAzioneGiocata;
+                    }
+                }
 				//dato che in questo giro non ho giocato nessuna carta e richiamato subito min restituisco subito che ha calcolato
 				return valRestituitoAzioneGiocata;
 			}else{
@@ -75,50 +167,75 @@ public class GiocatoreCPU extends Giocatore {
 		for(int i = 0; i < carteInManoMax.size(); i++){
 			//prima di giocare la carta devo verificare se questa carta è giocabile. Se la funzione ritorna true allora posso giocare la carta, se la funzione ritorna false non posso
 			//giocare quella carta.
-			if(this.CheckCartaGiocabile(carteInManoMax.get(i), ultimaCartaGiocata)){
+			if(this.CheckCartaGiocabile(carteInManoMax.get(i), ultimaCartaGiocata, carteInManoMax, ultimoColoreValido)){
+	            //mi salvo carteInMAnoMin e carte in tavola per risistemarli al ritorno dalla ricorsione
+	            List<Carta> carteInManoMinCopia = this.CloneListaCarte(carteInManoMin);
+	            List<Carta> carteInTavolaCopia = this.CloneListaCarte(carteInTavola);
+	            String coloreAttuale = ultimoColoreValido;
+	            Mazzo mazzoCarteCopia = mazzoCarteTotali.ClonaMazzo();
+	            //List<Carta> carteInManoMaxCopia = this.CloneListaCarte(carteInManoMax);
 				//devo creare lo stato da passare a min. Quindi una alla volta gioco le carte
 				carteInTavola.add(carteInManoMax.get(i));
 				//la rimuovo da carte in mano
 				Carta rimossa = carteInManoMax.remove(i);
+                //se è un jolly devo cambiare colore
+                if(rimossa.getColore()== "Jolly") ultimoColoreValido = this.ScegliColore(this._carteInMano, ultimoColoreValido);
+                //se la carta giocata ha lo stesso simbolo ma è di colore diverso devo cambiare il colore di gioco
+                if(rimossa.getColore() != ultimoColoreValido & rimossa.getTipocarta() == ultimaCartaGiocata.getTipocarta()) ultimoColoreValido = rimossa.getColore();
 				//mi faccio restituire valore funzione obiettivo da min
-				int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola); 
+				int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola, mazzoCarteTotali, alfa, beta, isMinimax, livello, ultimoColoreValido); 
 				//assegno valore restituito a carta così alla fine so quale albero prendere
 				rimossa.setValore(valRestituitoAzioneGiocata);
 				//reinserisco carta rimossa per far quadrare i conti
 				carteInManoMax.add(i, rimossa);
-				//e tolgo da carte in tavola questa appena buttata per far quadrare i conti
-				carteInTavola.remove(rimossa);
+                //risistemo le liste salvate prima
+                this.CopiaListaCarte(carteInTavola, carteInTavolaCopia);
+                this.CopiaListaCarte(carteInManoMin, carteInManoMinCopia);
+                //this.CopiaListaCarte(carteInManoMax, carteInManoMaxCopia);
+                ultimoColoreValido = coloreAttuale;
+                mazzoCarteTotali.ResetMazzo(mazzoCarteCopia);
 				//ora devo assegnare a valori il malore massimo tra valori e valRestituitoAzioneGiocata
 				//in valori è salvato sempre il valore massimio
 				if(valRestituitoAzioneGiocata > valori){
 					valori = valRestituitoAzioneGiocata;
 				}
+                //controllo se sto facendo potatura alfa beta o no
+                if(!isMinimax){//se è false sto facendo potatura quindi inserisco codice per potatura
+                    if(valRestituitoAzioneGiocata >= beta){
+                        return valRestituitoAzioneGiocata;
+                    }
+                    //alfa <- max(alfa,v)
+                    if(valRestituitoAzioneGiocata >= alfa){
+                        alfa = valRestituitoAzioneGiocata;
+                    }
+                }
 				//conto carte giocate da Max
 				countNumeroCarteGiocate++;
 			}
 		}
 		//se le carte giocate sono pari a 0 vuol dire che non ho giocato nessuna carta perchè non potevo e che quindi mi tocca pescare una carta
 		if(countNumeroCarteGiocate == 0){
-			//pesco una carta dal mazzo e metto in mano
-			carteInManoMax.add(this.PescaCartaDalMazzo());
-			//passo il turno senza fare nulla e pasos il gioco a min con la carta già presente in tavola
-			int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola); 
-			//dato che in questo giro non ho giocato nessuna carta e richiamato subito min restituisco subito che ha calcolato
-			return valRestituitoAzioneGiocata;
+            return 0; //non ha senso cercare perchè tanto questa è l'unica azione disponibile
 		}
 		//ritorno valori (valore massimo funzione max)
 		return valori;
 	}
 	//parte min di minimax
-	private int TurnoDiMin(List<Carta> carteInManoMin, List<Carta> carteInManoMax, List<Carta> carteInTavola){
+	private int TurnoDiMin(List<Carta> carteInManoMin, List<Carta> carteInManoMax, List<Carta> carteInTavola, Mazzo mazzoCarteTotali, int alfa, int beta, Boolean isMinimax, int livello, String ultimoColoreValido){
+        //aumento di 1 il livello dell'albero
+        livello++;
 		//se questa è l'ultima azione da fare allora restituisci valore funzione obiettivo.
-		//setto valore funzione obiettivo a -1 quando vince
+		//setto valore funzione obiettivo a -10 quando vince
 		if(this.TerminatoAlbero(carteInManoMin)){
-			return -1;
+			return -100;
 		}
 		//controllo le carte gioabili perche se sono zero devo passare il turno e pescare una carta quindi richiamare il mio avversario sulla sua carta giocata
 		//devo controllare anche se l'ultima carta giocata è stata un più due o più quattro o salta turno o inverti giro perchè io salto il turno e tocca di nuovo all'avversario
 		Carta ultimaCartaGiocata = carteInTavola.get(carteInTavola.size() -1 );
+        //se voglio limitare la profondità ad un livello prefissato invece che esplorare il tutto utilizzo questo codice
+        if(this.TestTaglio(livello)){
+			return this.ValutaMossa(ultimaCartaGiocata, carteInManoMin, carteInManoMax, false);
+		}
 		//se è già stata usata (cioè l'avversario ha saltato il proprio turno e tocca a me) setto a false il controllo e proseguo tranquillamente nel gioco
 		if(ultimaCartaGiocata.getUsata()){
 			ultimaCartaGiocata.setUsata(false);
@@ -128,23 +245,49 @@ public class GiocatoreCPU extends Giocatore {
 			if(ultimaCartaGiocata.getColore() == "Jolly"){//se è un +4 o cambia colore cambio il colore e in caso pesco le carte
 				if(ultimaCartaGiocata.getTipocarta() == "+4"){ //se è +4 pesco 4 carte
 					for(int i = 0 ; i < 4; i++){
-						carteInManoMin.add(this.PescaCartaDalMazzo());
+                        //potrei ritornare null perchè il mazzo è finito
+                        Carta cartaPescata = this.PescaCartaDalMazzo();
+                        if(cartaPescata != null){
+                            carteInManoMin.add(cartaPescata);
+                        }else{
+                            //ritorna null. vuol dire che il mazzo è finito. devo vedere chi ha vinto. 
+                            //vince chi ha meno carte in mano
+                            return this.CheckNumeroCarteInManoAllaFineDelMazzo(false);
+                        }
 					}
 				}
-				//sia che sia +4 che cambia colore devo cambiare il colore
-				ultimaCartaGiocata.setColore(this.ScegliColore(carteInManoMin));
 			}
 			//ora devo controllare se è un +2 così pesco 2 carte
 			if(ultimaCartaGiocata.getTipocarta() == "+2"){ //se è +4 pesco 4 carte
 				for(int i = 0 ; i < 2; i++){
-					carteInManoMin.add(this.PescaCartaDalMazzo());
+                    //potrei ritornare null perchè il mazzo è finito
+                    Carta cartaPescata = this.PescaCartaDalMazzo();
+                    if(cartaPescata != null){
+                        carteInManoMin.add(cartaPescata);
+                    }else{
+                        //ritorna null. vuol dire che il mazzo è finito. devo vedere chi ha vinto. 
+                        //vince chi ha meno carte in mano
+                        return this.CheckNumeroCarteInManoAllaFineDelMazzo(false);
+                    }
 				}
 			}
 			//devo controllare se è una carta che causa il salto di turno. Se lo è io non faccio nulla e salto il turno
 			//se è una carta normale esco dall'if e proseguo con il gioco
 			if(ultimaCartaGiocata.getCausaSaltoTurno()){
+	            //mi salvo tutte le liste per risistemarle al ritorno dalla ricorsione
+	            List<Carta> carteInManoMinCopia = this.CloneListaCarte(carteInManoMin);
+	            List<Carta> carteInManoMaxCopia = this.CloneListaCarte(carteInManoMax);
+	            List<Carta> carteInTavolaCopia = this.CloneListaCarte(carteInTavola);
+	            //String coloreAttuale = this._coloreDiGioco;
+	            Mazzo mazzoCarteCopia = mazzoCarteTotali.ClonaMazzo();
 				//devo saltare il turno e quindi richiamare max sempre sull'ultima carta giocata
-				int valRestituitoAzioneGiocata = this.TurnoDiMax(carteInManoMin, carteInManoMax, carteInTavola); 
+				int valRestituitoAzioneGiocata = this.TurnoDiMax(carteInManoMax, carteInManoMin, carteInTavola, mazzoCarteTotali, alfa, beta, isMinimax, livello, ultimoColoreValido); 
+                //restituisco alle liste le loro posizioni originali
+                this.CopiaListaCarte(carteInTavola, carteInTavolaCopia);
+                this.CopiaListaCarte(carteInManoMin, carteInManoMinCopia);
+                this.CopiaListaCarte(carteInManoMax, carteInManoMaxCopia);
+                //this._coloreDiGioco = coloreAttuale;
+                mazzoCarteTotali.ResetMazzo(mazzoCarteCopia);
 				//dato che in questo giro non ho giocato nessuna carta e richiamato subito min restituisco subito che ha calcolato
 				return valRestituitoAzioneGiocata;
 			}else{
@@ -160,70 +303,61 @@ public class GiocatoreCPU extends Giocatore {
 		for(int i = 0; i < carteInManoMin.size(); i++){
 			//prima di giocare la carta devo verificare se questa carta è giocabile. Se la funzione ritorna true allora posso giocare la carta, se la funzione ritorna false non posso
 			//giocare quella carta.
-			if(this.CheckCartaGiocabile(carteInManoMin.get(i), ultimaCartaGiocata)){
+			if(this.CheckCartaGiocabile(carteInManoMin.get(i), ultimaCartaGiocata, carteInManoMin, ultimoColoreValido)){
+                //mi salvo carteInMAnoMin e carte in tavola per risistemarli al ritorno dalla ricorsione
+                List<Carta> carteInManoMaxCopia = this.CloneListaCarte(carteInManoMax);
+                List<Carta> carteInTavolaCopia = this.CloneListaCarte(carteInTavola);
+                String coloreAttuale = ultimoColoreValido;
+                Mazzo mazzoCarteCopia = mazzoCarteTotali.ClonaMazzo();
+                //List<Carta> carteInManoMinCopia = this.CloneListaCarte(carteInManoMin);
 				//devo creare lo stato da passare a min. Quindi una alla volta gioco le carte
 				carteInTavola.add(carteInManoMin.get(i));
 				//la rimuovo da carte in mano
 				Carta rimossa = carteInManoMin.remove(i);
+                //se è un jolly devo cambiare colore
+                if(rimossa.getColore() == "Jolly") ultimoColoreValido = this.ScegliColore(this._carteInMano, ultimoColoreValido);
+                //se la carta giocata ha lo stesso simbolo ma è di colore diverso devo cambiare il colore di gioco
+                if(rimossa.getColore() != ultimoColoreValido) ultimoColoreValido = rimossa.getColore();
 				//mi faccio restituire valore funzione obiettivo da max
-				int valRestituitoAzioneGiocata = this.TurnoDiMax(carteInManoMin, carteInManoMax, carteInTavola); 
+				int valRestituitoAzioneGiocata = this.TurnoDiMax(carteInManoMax, carteInManoMin, carteInTavola, mazzoCarteTotali, alfa, beta, isMinimax, livello, ultimoColoreValido); 
+                                //assegno valore restituito a carta così alla fine so quale albero prendere
+				rimossa.setValore(valRestituitoAzioneGiocata);
 				//reinserisco carta rimossa per far quadrare i conti
 				carteInManoMin.add(i, rimossa);
-				//e tolgo da carte in tavola questa appena buttata per far quadrare i conti
-				carteInTavola.remove(rimossa);
+				//risistemo le liste salvate prima
+                this.CopiaListaCarte(carteInTavola, carteInTavolaCopia);
+                //this.CopiaListaCarte(carteInManoMin, carteInManoMinCopia);
+                this.CopiaListaCarte(carteInManoMax, carteInManoMaxCopia);
+                ultimoColoreValido = coloreAttuale;
+                mazzoCarteTotali.ResetMazzo(mazzoCarteCopia);
 				//ora devo assegnare a valori il malore minimo tra valori e valRestituitoAzioneGiocata
 				//in valori è salvato sempre il valore minimo
 				if(valRestituitoAzioneGiocata < valori){
 					valori = valRestituitoAzioneGiocata;
 				}
+	            //controllo se sto facendo potatura alfa beta o no
+	            if(!isMinimax){//se è false sto facendo potatura quindi inserisco codice per potatura
+	                if(valRestituitoAzioneGiocata <= alfa){
+	                    return valRestituitoAzioneGiocata;
+	                }
+	                //beta <- min(beta,v)
+	                if(valRestituitoAzioneGiocata <= beta){
+	                    beta = valRestituitoAzioneGiocata;
+	                }
+	            }
 				//conto carte giocate da Max
 				countNumeroCarteGiocate++;
 			}
 		}
 		//se le carte giocate sono pari a 0 vuol dire che non ho giocato nessuna carta perchè non potevo e che quindi mi tocca pescare una carta
 		if(countNumeroCarteGiocate == 0){
-			//pesco una carta dal mazzo e metto in mano
-			carteInManoMin.add(this.PescaCartaDalMazzo());
-			//passo il turno senza fare nulla e passo il gioco a max con la carta già presente in tavola
-			int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, carteInTavola); 
-			//dato che in questo giro non ho giocato nessuna carta e richiamato subito min restituisco subito che ha calcolato
-			return valRestituitoAzioneGiocata;
+        	return 0;
 		}
 		//ritorno valori (valore minimo funzione min)
 		return valori;
 	}
 	
-	//check se carta è buttabile secondo le regole scelte
-	private Boolean CheckCartaGiocabile(Carta cartaPresaInConsiderazione, Carta cartaSulBanco){
-		//se la carta giocata è una carta Jolly
-		if(cartaPresaInConsiderazione.getColore() == "Jolly" ){
-			Boolean check = false; //var appoggio per controllo colore carte
-			//controllo se in mano ho carte dello stesso colore della carta sul banco
-			for(int i = 0; i < this._carteInMano.size(); i++){
-				if(this._carteInMano.get(i).getColore() == cartaSulBanco.getColore()){
-					check = true;
-				}
-			}
-			if(check){//se ho carte in mano con lo stesso colore della carta sul banco non posso buttare il cambia colore
-				return false;
-			}else{ //non ho carte dello stesso colore quindi sono abilitato all'uso di questa carta e restituisco relativo punteggio
-				return true;
-			}
-		}
-		//se il colore tra le due carte è diverso e anche il simbolo è diverso allora ritorno false
-		if((cartaPresaInConsiderazione.getColore() != cartaSulBanco.getColore()) & (cartaPresaInConsiderazione.getTipocarta() != cartaSulBanco.getTipocarta())){
-			return false;
-		}
-		//se il colore è uguale tra le carte ritorno true
-		if(cartaPresaInConsiderazione.getColore() == cartaSulBanco.getColore()){
-			return true;
-		}
-		//se il simbolo è uguale tra le carte ritorno true
-		if(cartaPresaInConsiderazione.getTipocarta() == cartaSulBanco.getTipocarta()){
-			return true;
-		}
-		return false;
-	}
+	
 	
 	//funzione di terminazione. restituisce true se sono alla fine dell'albero
 	private Boolean TerminatoAlbero(List<Carta> listaCarteInMano){
@@ -233,74 +367,53 @@ public class GiocatoreCPU extends Giocatore {
 			return false;
 		}
 	}
-	
+        //test di taglio per non esplorare intero albero
+        private Boolean TestTaglio(Integer livello){
+		if(livello >= 10){
+			return true; // se la lista delle carte in mano è 1 vuol dire che ho vinto e finito il gioco
+		}else{
+			return false;
+		}
+	}
+        
 	//funzione di valutazione carta da giocare
-	private int ValutaMossa(Carta cartaGiocata){
-		//riferimmento a carta in cima al mazzo sul tavolo
-		Carta cartaSulBanco = this._riferimentoGiocoUno.getMazzoTotale().CartaInCima();
-		//se il colore tra le due carte è diverso e la carta giocata non è carta azione allora ritorno 0
-		if((cartaGiocata.getColore() != cartaSulBanco.getColore()) & cartaGiocata.getColore() != "Jolly"){
-			return 0;
-		}
-		//se la carta giocata è una carta Jolly
-		if(cartaGiocata.getColore() == "Jolly" ){
-			Boolean check = false; //var appoggio per controllo colore carte
-			//controllo se in mano ho carte dello stesso colore della carta sul banco
-			for(int i = 0; i < this._carteInMano.size(); i++){
-				if(this._carteInMano.get(i).getColore() == cartaSulBanco.getColore()){
-					check = true;
-				}
-			}
-			if(check){//se ho carte in mano con lo stesso colore della carta sul banco non posso buttare il cambia colore
-				return 0;
-			}else{ //non ho carte dello stesso colore quindi sono abilitato all'uso di questa carta e restituisco relativo punteggio
-				//favorisco l'uso del cambia colore rispetto del +4 conferendo due punteggi diversi
-				if(cartaGiocata.getTipocarta() == "+4"){
-					return 1;
-				}else{
-					return 2;
-				}
-			}
-		}
-		//se la carta giocata è una carta con stesso simbolo ma colore diverso
-		if(cartaGiocata.getTipocarta() == cartaSulBanco.getTipocarta() & cartaGiocata.getColore() != cartaSulBanco.getColore()){
-			return 1 + this.SubFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
-		}
-		//se la carta ha lo stesso colore
-		if(cartaGiocata.getColore() == cartaSulBanco.getColore()){
-			return 2 + this.SubFunzioneCasiParticolari(cartaGiocata, cartaSulBanco);
-		}
-		return 0;
+	private int ValutaMossa(Carta cartaGiocata, List<Carta> carteInManoIo, List<Carta> carteInManoAvversario, Boolean turnoDiMax){
+        //proviamo funzione di valutazione effettuata contando carte giocabili da me e carte giocabili da avversario e sottraendo questi due valori. Il risultato sarà il valore restituito dalla funzione
+        //calcolo per me
+        int carteGiocabiliIo = 0;
+        for(int i = 0; i < carteInManoIo.size(); i++){
+            if(carteInManoIo.get(i).getColore() == "Jolly" ) carteGiocabiliIo++; //se sono +4 o cambia colore posso giocarli sempre senza problemi
+            if(carteInManoIo.get(i).getColore() == cartaGiocata.getColore() ) carteGiocabiliIo++; //se le carte sono dello stesso colore della carta in campo posso giocarle
+            if(carteInManoIo.get(i).getTipocarta() == cartaGiocata.getTipocarta() & carteInManoIo.get(i).getColore() != cartaGiocata.getColore()) carteGiocabiliIo++; //se le carte sono dello stesso simbolo ma colore diverso della carta in campo posso giocarle
+        }
+        //calcolo per avversario
+        int carteGiocabiliAvversario = 0;
+        for(int i = 0; i < carteInManoAvversario.size(); i++){
+            if(carteInManoAvversario.get(i).getColore() == "Jolly" ) carteGiocabiliAvversario++; //se sono +4 o cambia colore posso giocarli sempre senza problemi
+            if(carteInManoAvversario.get(i).getColore() == cartaGiocata.getColore() ) carteGiocabiliAvversario++; //se le carte sono dello stesso colore della carta in campo posso giocarle
+            if(carteInManoAvversario.get(i).getTipocarta() == cartaGiocata.getTipocarta() & carteInManoAvversario.get(i).getColore() != cartaGiocata.getColore()) carteGiocabiliAvversario++; //se le carte sono dello stesso simbolo ma colore diverso della carta in campo posso giocarle
+        }
+        int sottrazioneCarteGiocabili = carteGiocabiliIo - carteGiocabiliAvversario;
+        int sottrazioneNumeroCarte = - (carteInManoIo.size() - carteInManoAvversario.size());
+        //ritorno la differenza tra i due valori
+        int risultatofinale = sottrazioneNumeroCarte + sottrazioneCarteGiocabili;
+        if(!turnoDiMax){
+            risultatofinale = -risultatofinale;
+        }
+        //l'intuizione è che chi ha più carte giocabili compatibili con la carta in campo ha piu chance di vincere. ma dobbiamo anche contare quante carte in mano hanno le persone. chi ha
+        //meno carte ha più possibilità di vincere
+        return risultatofinale;
 	}	
-	private int SubFunzioneCasiParticolari(Carta cartaGiocata, Carta cartaSulBanco){
-		//se la carta giocata è una carta azione cambia giro
-		if(cartaGiocata.getTipocarta() == "inverti giro"){
-			return 1;
-		}
-		//se la carta giocata è una carta azione stop
-		if(cartaGiocata.getTipocarta() == "stop"){
-			return 1;
-		}
-		//se la carta giocata è una carta azione +2
-		if(cartaGiocata.getTipocarta() == "+2"){
-			return 2;
-		}
-		//se la carta è una carta normale
-		return 3;
-	}
-	
-	//ritorna la carta scelta da giocare utilizzando l'algoritmo potatura alfa beta  <------------------------------------------------------------------
-	private Carta PotaturaAlfaBetaCartaScelta(){
-		return new Carta("+2", "rossa", true);
-	}
+
 
 	//sceglie la carta da giocare usando o il minimax o la potatura alfa beta
-	public Carta GiocaCarta(){
+	public Carta GiocaCarta(String ColoreOriginario){
 		//se l'ultima carta giocata in campo era un +2 o +4 non chiedo manco che azione fare, pesco le carte e passo il turno
 		//utlima carta giocata
-		Carta CimaMazzo = this._riferimentoGiocoUno.getMazzoTotale().getCarteScartate().get(this._riferimentoGiocoUno.getMazzoTotale().getCarteScartate().size() - 1);
+		Carta CimaMazzo = this._riferimentoGiocoUno.getMazzoTotale().CartaInCima();
+                //se è già stata usata (cioè l'avversario ha saltato il proprio turno e tocca a me) setto a false il controllo e proseguo tranquillamente nel gioco
 		if(CimaMazzo.getUsata()){
-			CimaMazzo.setUsata(false);
+			//CimaMazzo.setUsata(false);
 		}else{
             //se non è già stata usata la uso e la setto come usata (questo solo nel caso che la carta sia un +4 o cambia colore )
             CimaMazzo.setUsata(true);
@@ -310,8 +423,6 @@ public class GiocatoreCPU extends Giocatore {
                                 this._carteInMano.add(this.PescaCartaDalMazzo());
                         }
                 }
-                //sia che sia +4 che cambia colore devo cambiare il colore
-                CimaMazzo.setColore(this.ScegliColore(this._carteInMano));
             }
             //ora devo controllare se è un +2 così pesco 2 carte
             if(CimaMazzo.getTipocarta() == "+2"){ //se è +4 pesco 4 carte
@@ -329,22 +440,47 @@ public class GiocatoreCPU extends Giocatore {
                 CimaMazzo.setUsata(false);
             }
         }
-		Carta cartaSelezionata;
-		//ottengo al carta da giocare
-		if(this._riferimentoGiocoUno.getTipologiaAlgoritmo()){
-			cartaSelezionata = this.MinimaxCartaScelta();
-		}else{
-			cartaSelezionata = this.PotaturaAlfaBetaCartaScelta();
-		}
+                
+		Carta cartaSelezionata = null;
+                
+        try{
+            //ottengo al carta da giocare true=minimax, false=potatura alfabeta
+            cartaSelezionata = this.AlgoritmoCartaScelta(this._riferimentoGiocoUno.getTipologiaAlgoritmo(), ColoreOriginario);
+        }catch(Exception ex){ //lascio leccezione perchè se finisco il mazzo potrei lanciare un eccezione che non ho ancora trovato da dove viene lanciata, ma
+            //il programma funziona correttamente perchè termina senza problemi
+            System.out.println("errore nel generare carte dall'algoritmo");
+        }
 		//se carta selezionata è null vuol dire che salto il turno volontariamente e quindi pesco una carta
 		if(cartaSelezionata != null){
+            //stampo valore carta in debug
+            System.out.println(this.getNome() + " " + cartaSelezionata.getTipocarta() + " " + cartaSelezionata.getColore());
 			//lo rimuovo dalle carte in mano
 			this.getCarteInMano().remove(cartaSelezionata);
+            //se è un jolly devo cambiare colore
+            if(cartaSelezionata.getColore()== "Jolly"){ 
+                String coloreScelto = this.ScegliColore(this._carteInMano, ColoreOriginario);
+                this._riferimentoGiocoUno.setColoreCartaInGioco(coloreScelto);
+                //mostro colore scelto
+                this._riferimentoGiocoUno.getControllerGioco().avvisoCambioColore(coloreScelto, false);
+            }
+            //se la carta giocata ha lo stesso simbolo ma è di colore diverso devo cambiare il colore di gioco
+            if(cartaSelezionata.getColore() != ColoreOriginario & cartaSelezionata.getTipocarta() == CimaMazzo.getTipocarta()) this._riferimentoGiocoUno.setColoreCartaInGioco(cartaSelezionata.getColore());
 			//ritorno questa carta
 			return cartaSelezionata;
 		}else{
+	        //stampo valore carta in debug
+	        System.out.println(this.getNome() + " pesca una carta");
 			//pesco una carta
-			this._carteInMano.add(this.PescaCartaDalMazzo());
+            //controllo che se ritorna null vuol dire che il mazzo è finito
+            Carta cartaPescata = this.PescaCartaDalMazzo();
+            if(cartaPescata != null){
+                this._carteInMano.add(cartaPescata);
+            }else{
+                //mazzo finito, bisogna stabilire vincitore e bisogna far capire che il mazzo è finito
+                Carta cartaSignificatoMazzoFinito = new Carta("NULL","NULL",false);
+                return cartaSignificatoMazzoFinito;
+            }
+			
 			//ritorno null cosi passo il turno
 			return null;
 		}
@@ -356,24 +492,35 @@ public class GiocatoreCPU extends Giocatore {
 		List<Carta> nuovaLista = new ArrayList<Carta>();
 		//copio tutti gli elementi della lista
 		for(int i = 0; i < DaClonare.size(); i++){
-			Carta nuovaCarta = new Carta(DaClonare.get(i).getTipocarta(),DaClonare.get(i).getColore(),DaClonare.get(i).getCausaSaltoTurno());
+			Carta nuovaCarta = new Carta(DaClonare.get(i).getTipocarta(),DaClonare.get(i).getColore(),DaClonare.get(i).getCausaSaltoTurno(),DaClonare.get(i).getUsata(), DaClonare.get(i).getValore());
 			nuovaLista.add(nuovaCarta);
 		}
 		return nuovaLista;
 	}
-	
+	//copia mazzo clonato in quello originale
+    private void CopiaListaCarte(List<Carta> Destinazione, List<Carta> Origine){
+        Destinazione.clear();
+        for(int i = 0; i < Origine.size(); i++){
+                Destinazione.add(Origine.get(i));
+        }
+    }
+        
 	//generare carte in mano all'avversario
-	private List<Carta> GeneraCarteAvversario(Integer numeroCarte){
-		//da fare  <---------------------------------------------------------------------------------------------------------------------------------------------------------------
+	private List<Carta> GeneraCarteAvversario(Integer numeroCarte, Mazzo mazzoCarte){
 		List<Carta> listaCarte = new ArrayList<Carta>();
 		for(Integer i = 0; i < numeroCarte ; i++){
-			listaCarte.add(new Carta("+2", "rossa", true));
+            //genero randomicamente una carta da quelle presenti nel mazzo
+            if(mazzoCarte.getCarteDelMazzo().size() > 0){
+                int randomNum = 0 + (int)(Math.random() * mazzoCarte.getCarteDelMazzo().size() -1 ); 
+                listaCarte.add(mazzoCarte.getCarteDelMazzo().remove(randomNum));
+            }
+                        
 		}
 		return listaCarte;
 	}
 	
 	//scegli colore dominante tra le carte in mano per cambiare colore con cambia colore
-	private String ScegliColore(List<Carta> carteInMano){
+	public String ScegliColore(List<Carta> carteInMano, String vecchioColore){
 		Integer rosso = 0;
 		Integer blu = 0;
 		Integer giallo= 0;
@@ -410,21 +557,28 @@ public class GiocatoreCPU extends Giocatore {
 		if(verde > blu & verde > giallo & verde > rosso){
 			return "verde";
 		}
-		//se nessun colore domina lo scelgo random
+        //se non ce ne è uno predominante trovo i due predominanti e ne ritorno uno a caso
+        if(rosso == blu) return "rosso";
+        if(rosso == giallo) return "giallo";
+        if(rosso == verde) return "rosso";
+        if(blu == giallo) return "blu";
+        if(blu == verde) return "blu";
+        if(giallo == verde) return "verde";
+		//se nessun colore domina lo scelgo random ma diverso da quello precedente
 		Integer randomNum = 0 + (int)(Math.random()*100); 
-		if(randomNum < 25 ) return "rosso";
-		if(randomNum < 50 ) return "blu";
-		if(randomNum < 75 ) return "giallo";
-		return "verde";
+		if(randomNum < 25 ) return "rosso" != vecchioColore ? "rosso" : "blu";
+		if(randomNum < 50 ) return "blu" != vecchioColore ? "blu" : "rosso";
+		if(randomNum < 75 ) return "giallo" != vecchioColore ? "giallo" : "verde";
+		return "verde" != vecchioColore ? "verde" : "giallo";
 	}
 	
 	//dato risultato minimax sceglie carta da giocare. Se più carte hanno stesso valore scelgo quale usare in base euristica prescelta -> prima a sinistra
-	private Carta CartaSceltaMinimax(List<Carta> carteInMano, Integer valore, List<Carta> carteInTavola){
+	private Integer CartaSceltaMinimax(List<Carta> carteInMano, Integer valore, List<Carta> carteInTavola, String ultimoColoreValido){
 		//conto le carte che possono essere giocate
 		int counterCarteGiocabili = 0; //counter
 		Carta cartaInTavolo = carteInTavola.get(carteInTavola.size() -1 );//carta sul tavolo
 		for(int i = 0; i < carteInMano.size(); i++){
-			if(this.CheckCartaGiocabile(carteInMano.get(i), cartaInTavolo)){
+			if(this.CheckCartaGiocabile(carteInMano.get(i), cartaInTavolo, carteInMano, ultimoColoreValido)){
 				counterCarteGiocabili++;
 			}
 		}
@@ -432,13 +586,56 @@ public class GiocatoreCPU extends Giocatore {
 		if(counterCarteGiocabili == 0){
 			return null;
 		}else{
-			//cerco la prima carta con valore ufuale al calore ritornato
-			int i = 0;
-			while(carteInMano.get(i).getValore() != valore){
-				i++;
-			}
-			//trovato la carta con quel valore la restituisco
-			return carteInMano.get(i);
+			//cerco la prima carta con valore uguale al valore ritornato
+            Boolean exit = false;
+            int i = -1;
+            while(i < carteInMano.size() & !exit){
+                i++;
+                if(this.CheckCartaGiocabile(carteInMano.get(i), cartaInTavolo, carteInMano, ultimoColoreValido)){
+                    if(carteInMano.get(i).getValore() == valore) exit = true;
+                }
+            }
+            //trovato la carta con quel valore la restituisco
+			return i;
 		}
 	}
+        
+        //controlla chi ha meno carte per stabilire che ha vinto nel caso che il mazzo abbia finito le carte
+        private Integer CheckNumeroCarteInManoAllaFineDelMazzo(Boolean maxOrMinEqualMax){
+            //carte in mano al giocatore attuale
+            int numeroCarteGiocatoreAttuale = this._carteInMano.size();
+            //carte in mano al giocatore avversario
+            int numeroCarteGiocatoreAvversario = 0;
+            List<Object> listaGiocatori = this._riferimentoGiocoUno.getListaGiocatori();
+            //so che ci son due giocatori quindi cerco semplicemente l'altro
+            String mioNome = this.getNome();
+            if(listaGiocatori.get(0).getClass() == Giocatore.class){
+                numeroCarteGiocatoreAvversario = ((Giocatore)listaGiocatori.get(0)).getCarteInMano().size();
+            }else{
+                if(listaGiocatori.get(1).getClass() == Giocatore.class){
+                    numeroCarteGiocatoreAvversario = ((Giocatore)listaGiocatori.get(0)).getCarteInMano().size();
+                }else{
+                    String nome = ((GiocatoreCPU)listaGiocatori.get(0)).getNome();
+                    if(nome != mioNome){
+                        numeroCarteGiocatoreAvversario = ((GiocatoreCPU)listaGiocatori.get(0)).getCarteInMano().size();
+                    }else{
+                        numeroCarteGiocatoreAvversario = ((GiocatoreCPU)listaGiocatori.get(1)).getCarteInMano().size();
+                    }
+                }
+            }
+            //controllo chi ha meno carte
+            if(maxOrMinEqualMax){
+                if(numeroCarteGiocatoreAttuale < numeroCarteGiocatoreAvversario){
+                    return 100;
+                }
+                return -100;
+            }else{
+                if(numeroCarteGiocatoreAttuale < numeroCarteGiocatoreAvversario){
+                    return -100;
+                }
+                return 100;
+            }
+            
+        }
+        
 }
