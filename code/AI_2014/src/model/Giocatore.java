@@ -47,7 +47,8 @@ public class Giocatore {
             this.AggiungeUnaCartaAlMazzo();
         }
     }
-
+    
+    
     //data la carta cliccata sull ui gioco questa carta. versione se da click ricevo la carta
     public Carta GiocaCarta(Carta selezionata){
         //devo controllare se è effettivamente giocabile come carta o no

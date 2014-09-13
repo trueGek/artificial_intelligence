@@ -1,8 +1,13 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.Carta;
 import model.Giocatore;
+import model.GiocatoreCPU;
 import model.GiocoUno;
+import model.Mazzo;
 
 public class Gioco {
 	//instanziazione controller
@@ -42,8 +47,52 @@ public class Gioco {
     
     //metodo che visualizza la carta sul mazzo delle carte scoperte
     public void mostraCartaMazzoScoperto(Carta cartaDaVisualizzare){
+    	    	
         //idealmente qua dovrebbe mostrare la nuova carta che viene buttata sul mazzo scoperto
     }
+    
+    
+    
+    public String colCard(){
+    	
+    	return this._gioco.getPrimaCartaCol();
+    	
+    }
+
+    public String numCard(){
+    	
+    	return this._gioco.getPrimaCartaNum();
+    	
+    }    
+    
+
+public List<Object> getGiocatori(){
+	
+	return this._gioco.getListaGiocatori();
+	
+}
+    
+
+public List<Carta> getMazzo(List<Object> gio, int i){
+	
+	Giocatore attuale = (Giocatore)this._gioco.getListaGiocatori().get(i);
+	
+	return attuale.getCarteInMano();
+	
+}
+    
+
+public Mazzo getMazzoTot(){
+	
+	return this._gioco.getMazzoTotale();
+	
+}
+
+public Boolean getFine(){
+	
+	return this._gioco.getGiocoFinito();
+	
+}
     
     
     //metodo che setta la tipologia di algoritmo
@@ -61,6 +110,12 @@ public class Gioco {
     //avvia gioco tra CPU vs CPU
     public void avviaGiocoCPUvsCPU(){
         this._gioco.ProseguiGiocoCasoGiocatoriSoloCPU();
+    }
+    
+    public void eseguiCPU(GiocatoreCPU att){
+    	
+    	this._gioco.AzioneCPU(att);
+    	
     }
     
     //dichiara UNO
@@ -93,7 +148,7 @@ public class Gioco {
     
     
     //metodo richiamato da selezione di carta da parte dell'umano 
-    public void cartaCliccataDaButtare(Integer index /*Carta cartaSelezionata*/){
+    public void cartaCliccataDaButtare(int index /*Carta cartaSelezionata*/){
         //non so come tu l'abbia implementata la selezione della carta. Cmq io l'ho pensata in due modi e ci son due modi appunto
         //o mi passi l'indice della carta o mi passi l'oggetto carta completo. I metodi ci sono per tutti e due i casi
         //trovo giocatore umano tra i due
@@ -112,6 +167,20 @@ public class Gioco {
         }
     }
     
+    public void giocaCarta(Carta curCard, int plr){
+    	
+    	Giocatore giocatoreUmano;
+    	giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
+    	
+    	System.out.println("Ciao");
+    	
+    	Carta gioca = giocatoreUmano.GiocaCarta(curCard);
+    	
+    	System.out.println(gioca.getTipocarta());
+    	
+    	this._gioco.ButtaCarta(gioca, plr);
+    	
+    }
     
     //metodo richiamato quando utente umano decide di passare il turno e quindi di automaticamente pescare una carta dal mazzo
     public void passaIlTurnoPescandoUnaCarta(){
@@ -127,6 +196,14 @@ public class Gioco {
         this._gioco.PassaIlTurnoAzioneUmana(pescata);
     }
     
+    public void pescaCarta(int cp, int num){
+    	
+    	Giocatore giocatoreUmano = (Giocatore)this._gioco.getListaGiocatori().get(cp);
+    	
+    	for(int i = 0; i < num; i++){
+    	giocatoreUmano.AggiungeUnaCartaAlMazzo();
+    	}
+    }
     
     //metodo per avvisare che umano salta il turno
     public void avvisoSaltoTurno(){

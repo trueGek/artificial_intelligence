@@ -1,0 +1,240 @@
+package controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Carta;
+import model.Giocatore;
+import model.GiocatoreCPU;
+import model.GiocoUno;
+import model.Mazzo;
+
+public class Gioco {
+	//instanziazione controller
+    private GiocoUno _gioco;
+    
+    public Gioco(){
+        //istanzio oggetto gioco
+        this._gioco = new GiocoUno(this);
+        //genero le carte per giocare
+        this._gioco.GeneraCarte();
+    }
+    
+    //come prima cosa devo sapere se ci sono giocatori umani nel gioco
+    public void ciSonoGiocatoriUmani(Boolean presenza){
+        //richiama questo metodo dalla view dopo aver selezionato se ci sono o no giocatori umani
+        //puoi modificare come vuoi il metodo basta che setti true o false a presenza cosi da settare la propietà su giocos
+        this._gioco.setThereIsHumanPlayer(presenza);
+    }
+    
+    //sapere nome giocatore umano
+    public void nomeGiocatoreUmano(String nome){
+        //io avevo fatto/pensato che l'utente poteva inserire anche il proprio nome.
+        //non è obbligatorio farlo, se si vuole il metodo c'è, altrimenti esiste già il metodo che ritorna un nome deciso dal pc fisso per l'umano
+        //dimmi te come vuoi fare. non ho manco notato se si vede il nome sulla view. dimmi
+    }
+    
+    //avvia il gioco
+    public void avviaIlGioco(){
+        //inizio Gioco
+        this._gioco.IniziaGioco();
+    }
+    
+    //metodo che avvisa quale giocatore inizia il gioco
+    public void avvisoInizioGioco(String nome){
+        //con questo metodo si dovrebbe vedere un alert che mostra il nome di chi inizia
+    }
+    
+    //metodo che visualizza la carta sul mazzo delle carte scoperte
+    public void mostraCartaMazzoScoperto(Carta cartaDaVisualizzare){
+    	    	
+        //idealmente qua dovrebbe mostrare la nuova carta che viene buttata sul mazzo scoperto
+    }
+    
+    
+    
+    public String colCard(){
+    	
+    	return this._gioco.getPrimaCartaCol();
+    	
+    }
+
+    public String numCard(){
+    	
+    	return this._gioco.getPrimaCartaNum();
+    	
+    }    
+    
+
+public List<Object> getGiocatori(){
+	
+	return this._gioco.getListaGiocatori();
+	
+}
+    
+
+public List<Carta> getMazzo(List<Object> gio, int i){
+	
+	Giocatore attuale = (Giocatore)this._gioco.getListaGiocatori().get(i);
+	
+	return attuale.getCarteInMano();
+	
+}
+    
+
+public Mazzo getMazzoTot(){
+	
+	return this._gioco.getMazzoTotale();
+	
+}
+
+public Boolean getFine(){
+	
+	return this._gioco.getGiocoFinito();
+	
+}
+    
+    
+    //metodo che setta la tipologia di algoritmo
+    public void setMinimaxOPotature(Boolean setting){
+        //ho pensato che sarebbe comodo avere un setting che ci fa decidere a view se vogliamo usare il minimax o la potatura
+        //non è necessario, possiamo farlo tranquillamente anche da codice
+        //come vuoi, il metodo qui c'è
+        //nel caso true sta a significare minimax
+        //e false potatura alfa beta
+        this._gioco.setTipologiaAlgoritmo(setting);
+        //da codice è deciso il test di taglio. cioè quanto in profondità andare o no con gli algoritmi
+        //ho provato minimax senza test di taglio e dopo un'ora stava ancora lavorando -.-
+    }
+    
+    //avvia gioco tra CPU vs CPU
+    public void avviaGiocoCPUvsCPU(){
+        this._gioco.ProseguiGiocoCasoGiocatoriSoloCPU();
+    }
+    
+    public void eseguiCPU(GiocatoreCPU att){
+    	
+    	this._gioco.AzioneCPU(att);
+    	
+    }
+    
+    //dichiara UNO
+    public void dichiaraUNO(String nomeGiocatore){
+        //metodo che implementa l'avviso che si è arrivato ad UNO.
+        //per cpu vs cpu farei che si chiude da solo o roba simile :)
+        //metto anche il nome giocatore per parametro se può servire
+    }
+    
+    //dichiara vittoria
+    public void dichiaraVittoria(String nomeGiocatore){
+        //come metodo sopra solo che questo usato per dichiarare vittoria
+    }
+    //dichiara vittoria con messaggio
+    public void dichiaraVittoria(String nomeGiocatore, String messaggio){
+        //come metodo sopra solo che questo usato per dichiarare vittoria
+        //questo vien erichiamato però solo se si vince quando finiscono le carte del mazzo.
+        //il messaggio contiente o "vittoria per minor numero di carte" o "pareggio" in caso i due giocatori abbiano lo stesso numero di carte in mano (in tal caso nomeGiocatore è vuoto)
+    }
+    
+    //continua gioco se è presente anche umano
+    public void avviaGiocoUmanovsCPU(){
+        this._gioco.ProseguiGiocoCasoGiocatoriAncheUmani();
+    }
+    
+    //avvisa che è il turno dell'umano
+    public void avvisaTurnoUmano(){
+        //view che avvisa turno dell'umano
+    }
+    
+    
+    //metodo richiamato da selezione di carta da parte dell'umano 
+    public void cartaCliccataDaButtare(int index /*Carta cartaSelezionata*/){
+        //non so come tu l'abbia implementata la selezione della carta. Cmq io l'ho pensata in due modi e ci son due modi appunto
+        //o mi passi l'indice della carta o mi passi l'oggetto carta completo. I metodi ci sono per tutti e due i casi
+        //trovo giocatore umano tra i due
+        Giocatore giocatoreUmano;
+        if(this._gioco.getListaGiocatori().get(0).getClass() == Giocatore.class){
+            giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(0);
+        }else{
+            giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(1);
+        }
+        Carta giocabileCartaScelta = giocatoreUmano.GiocaCarta(index);
+        //se ho ritornato null allora la carta selezionata è sbagliata
+        if(giocabileCartaScelta != null){
+            this._gioco.ButtaCartaAzioneUmana(giocabileCartaScelta);
+        }else{
+            //avvisa utente carta scelta sbagliata
+        }
+    }
+    
+    public void giocaCarta(Carta curCard, int plr){
+    	
+    	Giocatore giocatoreUmano;
+    	giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
+    	
+    	System.out.println("Ciao");
+    	
+    	Carta gioca = giocatoreUmano.GiocaCarta(curCard);
+    	
+    	System.out.println(gioca.getTipocarta());
+    	
+    	this._gioco.ButtaCarta(gioca, plr);
+    	
+    }
+    
+    //metodo richiamato quando utente umano decide di passare il turno e quindi di automaticamente pescare una carta dal mazzo
+    public void passaIlTurnoPescandoUnaCarta(){
+        //trovo giocatore umano tra i due
+        Giocatore giocatoreUmano;
+        if(this._gioco.getListaGiocatori().get(0).getClass() == Giocatore.class){
+            giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(0);
+        }else{
+            giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(1);
+        }
+        Carta pescata = giocatoreUmano.PassaIlTurno();
+        //aggiungo la carta al mazzo in mano e proseguo con il gioco
+        //this._gioco.PassaIlTurnoAzioneUmana(pescata);
+    }
+    
+    public void pescaCarta(int cp){
+    	
+    	Giocatore giocatoreUmano = (Giocatore)this._gioco.getListaGiocatori().get(cp);
+    	
+    	Carta pescata = giocatoreUmano.PescaCartaDalMazzo();
+    	
+    }
+    
+    //metodo per avvisare che umano salta il turno
+    public void avvisoSaltoTurno(){
+        //avviso
+    }
+    
+    //metodo per avvisare che umano deve pescare varie carte in più
+    public void avvisoPescareNCarte(int valore){
+        //avviso
+        //con valore va indicato 2 o 4 in base se è +2 o +4 
+        //basta solo avviso, la pesca delle carte viene fatta in automatico xD
+    }
+    
+    //metodo epr avvisare cambiamento colore
+    public void avvisoCambioColore(String colore, Boolean caso){
+        //avviso
+        //potrebeb essere interessante che quando si gioca umani contro pc venga un avviso in grande, quando pc contro pc no
+        //quindi con caso = true stiamo giocando umani vs pc 
+        //caso = false cpu vs cpu
+    }
+    
+    //devo decidere prossimo colore quando io umano butto un jolly
+    public String sceltaColore(){
+        //devo mostrare schermata selezione colore e ritornare questo valore
+        return "rosso";
+    }
+    
+    
+    //devo aggiornare le carte in mano a video.
+    public void visualizzaCarteInMano(){
+        //qua non so come avevi pensato di fare. Vuoi ogni volta tutta la lista delle carte in mano di uno dei due giocatori (facciamo due metodi, uno per ogni giocatore) o vuoi solo
+        //la nuova carta aggiunta in mano?
+    }
+}
+

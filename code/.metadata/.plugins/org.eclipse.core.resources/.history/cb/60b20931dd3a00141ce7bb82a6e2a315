@@ -1,0 +1,146 @@
+package model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Giocatore {
+	private String _nome;
+    protected List<Carta> _carteInMano;
+    protected GiocoUno _riferimentoGiocoUno;
+
+    //getter e setter
+    public String getNome() {
+        return _nome;
+    }
+
+    public void setNome(String _nome) {
+        this._nome = _nome;
+    }
+
+    public List<Carta> getCarteInMano() {
+        return _carteInMano;
+    }
+
+    public void setCarteInMano(List<Carta> _carteInMano) {
+        this._carteInMano = _carteInMano;
+    }
+
+    public Giocatore(String nomeCorrente, GiocoUno riferimentoGiocoUno){
+        this._nome = nomeCorrente;
+        this._carteInMano = new ArrayList<Carta>();
+        this._riferimentoGiocoUno = riferimentoGiocoUno;
+    }
+
+    //Pesca una carta dal mazzo 
+    public Carta PescaCartaDalMazzo(){
+        return this._riferimentoGiocoUno.getMazzoTotale().PescaCarta();
+    }	
+    
+    //agginge una carta al mazzo
+    public void AggiungeUnaCartaAlMazzo(){
+        this._carteInMano.add(this.PescaCartaDalMazzo());
+    }
+
+    //Pesca le carte iniziali per iniziare il gioco //settiamo a 6 le carte iniziali
+    public void PescaCarteIniziali(){
+        for(int i = 0; i < 6 ; i++){
+            this.AggiungeUnaCartaAlMazzo();
+        }
+    }
+    
+    
+    public Carta GiocaCarta2(int s){
+    	
+    	this._carteInMano.remove(selezionata);
+    	return selezionata;
+    }
+    
+    //data la carta cliccata sull ui gioco questa carta. versione se da click ricevo la carta
+    public Carta GiocaCarta(Carta selezionata){
+        //devo controllare se è effettivamente giocabile come carta o no
+        if(this.CheckCartaGiocabile(selezionata, this._riferimentoGiocoUno.getMazzoTotale().CartaInCima(), this._carteInMano, this._riferimentoGiocoUno.getColoreCartaInGioco())){
+            //la carta è giocabile
+            this._carteInMano.remove(selezionata);
+            return selezionata;
+        }else{
+            //la carta non è giocabile. Avviso l'utente e torno null
+            return null;
+        }
+    }
+
+    //data la carta cliccata sull ui gioco questa carta. versione se da click ricevo index
+    public Carta GiocaCarta(Integer i){
+        //tolgo la carta selezionata da quelle che possiedo in mano
+        Carta cartaSelezionata = this._carteInMano.get(i);
+        //devo controllare se è effettivamente giocabile come carta o no
+        if(this.CheckCartaGiocabile(cartaSelezionata, this._riferimentoGiocoUno.getMazzoTotale().CartaInCima(), this._carteInMano, this._riferimentoGiocoUno.getColoreCartaInGioco())){
+            //la carta è giocabile
+            this._carteInMano.remove(i);
+            return cartaSelezionata;
+        }else{
+            //la carta non è giocabile. Avviso l'utente e torno null
+            return null;
+        }
+            
+    }
+    
+    //azzera lista carte in mano
+    public void EliminaCarteInMano(){
+        this._carteInMano.clear();
+    }
+
+    //metodo usato per passare il turno. non si fa nulla ma pesca la carta dal mazzo
+    public Carta PassaIlTurno(){
+        return this._riferimentoGiocoUno.getMazzoTotale().PescaCarta();
+    }
+
+    //metodo dichiara UNO
+    public void DichiaraUNO(){
+            //visualizza segnale di uno
+        this._riferimentoGiocoUno.getControllerGioco().dichiaraUNO(this._nome);
+    }
+
+    //metodo usato per dichiarare la vittoria durante il gioco
+    public void DichiaraVittoria(){
+            //visualizza segnale di vittoria
+        this._riferimentoGiocoUno.getControllerGioco().dichiaraVittoria(this._nome);
+    }   
+    
+    //metodo usato per dichiarare vittoria se son finite le carte del mazzo
+    public void DichiaraVittoria(String messaggio){
+        //visualizza messaggio di vittoria
+        this._riferimentoGiocoUno.getControllerGioco().dichiaraVittoria(this._nome, messaggio);
+    }
+    
+    //check se carta è buttabile secondo le regole scelte
+    protected Boolean CheckCartaGiocabile(Carta cartaPresaInConsiderazione, Carta cartaSulBanco, List<Carta> cartePreseInConsiderazione, String ultimoColoreValido){
+        //se la carta giocata è una carta Jolly
+        if(cartaPresaInConsiderazione.getColore() == "Jolly" ){
+                Boolean check = false; //var appoggio per controllo colore carte
+                //controllo se in mano ho carte dello stesso colore della carta sul banco
+                for(int i = 0; i < cartePreseInConsiderazione.size(); i++){
+                        if(cartePreseInConsiderazione.get(i).getColore() == ultimoColoreValido){
+                                check = true;
+                        }
+                }
+                if(check){//se ho carte in mano con lo stesso colore della carta sul banco non posso buttare il cambia colore
+                        return false;
+                }else{ //non ho carte dello stesso colore quindi sono abilitato all'uso di questa carta e restituisco relativo punteggio
+                        return true;
+                }
+        }
+        //se il colore tra le due carte è diverso e anche il simbolo è diverso allora ritorno false
+        if((cartaPresaInConsiderazione.getColore() != ultimoColoreValido) & (cartaPresaInConsiderazione.getTipocarta() != cartaSulBanco.getTipocarta())){
+                return false;
+        }
+        //se il colore è uguale tra le carte ritorno true
+        if(cartaPresaInConsiderazione.getColore() == ultimoColoreValido){
+                return true;
+        }
+        //se il simbolo è uguale tra le carte ritorno true
+        if(cartaPresaInConsiderazione.getTipocarta() == cartaSulBanco.getTipocarta()){
+                return true;
+        }
+        return false;
+    }
+}

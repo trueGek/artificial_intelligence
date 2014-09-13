@@ -27,6 +27,24 @@ public class GiocoUno {
 		return _listaGiocatori;
 	}
 
+	public String getPrimaCartaNum(){
+		
+		return _mazzoTotale.CartaInCima().getTipocarta();
+				
+	}
+	
+	public String getPrimaCartaCol(){
+		
+		return _mazzoTotale.CartaInCima().getColore();
+		
+	}
+	
+	public Boolean getGiocoFinito(){
+		
+		return _giocoFinito;
+		
+	}
+	
 	public void setListaGiocatori(List<Object> _listaGiocatori) {
 		this._listaGiocatori = _listaGiocatori;
 	}
@@ -114,8 +132,14 @@ public class GiocoUno {
 		}	
 	}
 
+    public void ScegliOrdinePartenzaGioco(){
+
+
+
+    }
+
 	//metodo usato per scegliere ordine partenza giocatori
-	public void ScegliOrdinePartenzaGioco(){
+	public void ScegliOrdinePartenzaGioco2(){
         //devo far pescare ad ogni giocatore una carta
         //la faccio pescare io la carta al giocatore umano senza che lui intervenga
         //faccio pescare ad ogni giocatore una carta
@@ -174,10 +198,10 @@ public class GiocoUno {
 			String nomeGiocatoreUmano = this.StubNomeGiocatoreUmano();
 			//creo il giocatore umano
 			Giocatore giocatoreUmano = new Giocatore(nomeGiocatoreUmano, this);
-			//aggiungo il giocatore umano alla lista
-			this._listaGiocatori.add(giocatoreUmano);
 			//creo il giocatore cpu nemico
 			this.CreaGiocatoriCPU(1);
+            //aggiungo il giocatore umano alla lista
+            this._listaGiocatori.add(giocatoreUmano);
 		}else{
 			//creo due giocatori CPU per farli scontrare assieme
 			this.CreaGiocatoriCPU(2);
@@ -274,7 +298,7 @@ public class GiocoUno {
 	}
 	
         //azioni svolte dall'intelligenza artificiale durante il gioco
-	private void AzioneCPU(GiocatoreCPU giocatoreAttuale){
+	public void AzioneCPU(GiocatoreCPU giocatoreAttuale){
         //aggiungo alle carte in tavola la carta giocata dal gioatore cpu
         Carta cartaDaGiocare = giocatoreAttuale.GiocaCarta(this._coloreCartaInGioco);
         //se ritorna null vuol dire che devo pescare e passare il turno altrimenti devo giocare
@@ -354,6 +378,12 @@ public class GiocoUno {
             //tocca di nuovo al pc
             this.AzioneCPU(altroGiocatore);
         }
+    }
+    
+    public void ButtaCarta(Carta ct, int plr){
+    	
+    	this._mazzoTotale.getCarteScartate().add(ct);
+    	
     }
         
     //azione umano. Pesca carta e passa il turno

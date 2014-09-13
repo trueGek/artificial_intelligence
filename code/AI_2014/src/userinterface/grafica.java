@@ -6,10 +6,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import controller.Gioco;
+import model.Carta;
+import model.Giocatore;
+import model.GiocatoreCPU;
+
+
+
 
 class FrameP extends JFrame{
 	
 	JPanel c;
+	
+	Gioco g;
+	
+	int curPlayer = 0;
 	
 /*Title screen*/
 	JLabel title = new JLabel("Benvenuti in UNO!");
@@ -125,7 +139,7 @@ class FrameP extends JFrame{
 		
 		c.removeAll();
 		c = (JPanel)this.getContentPane();
-		this.setSize(600,600);
+		this.setSize(700,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
@@ -160,24 +174,50 @@ class FrameP extends JFrame{
 		
 		g1.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		g1.setBackground(Color.BLUE);
+				
+		List<Object> giocatori = g.getGiocatori();
 		
-		String deck[] = new String [100];
-		
-		deck[0]="3";
-		deck[1]="2";
-		deck[2]="+4";
-		deck[3]="7";
+		List<Carta> mazzo = g.getMazzo(giocatori, 0);
+	
 		
 		
-		for(int i = 0; i < deck.length & deck[i]!=null; i++){
+		for(int i = 0; i < mazzo.size(); i++){
 			
-			JButton card_i= new JButton(deck[i]);
+			Carta curCard = mazzo.get(i);
 			
-			card_i.setPreferredSize(new Dimension(100,100));
+			
+			JButton card_i= new JButton(curCard.getTipocarta());
+			
+			card_i.setPreferredSize(new Dimension(50,50));
 			card_i.setFont(new Font("Arial", Font.PLAIN, 25));
-			card_i.setForeground(Color.RED);
 			
-			card_i.addActionListener(new PlayCard(deck[i], "red"));
+			
+			if(curCard.getColore()=="giallo"){
+				card_i.setForeground(Color.yellow);
+				card_i.addActionListener(new PlayCard(curCard.getTipocarta(), "giallo", curCard));
+			}else{
+				if(curCard.getColore()=="verde"){
+					card_i.setForeground(Color.green);
+					card_i.addActionListener(new PlayCard(curCard.getTipocarta(),  "verde",curCard));
+				}else{
+					if(curCard.getColore()=="blu"){
+						card_i.setForeground(Color.blue);
+						card_i.addActionListener(new PlayCard(curCard.getTipocarta(), "blu", curCard));
+					}else{
+						if(curCard.getColore()=="rosso"){
+							card_i.setForeground(Color.red);
+							card_i.addActionListener(new PlayCard(curCard.getTipocarta(), "rosso", curCard));
+						}else{
+							
+							card_i.addActionListener(new PlayCard(curCard.getTipocarta(), "nero", curCard));
+							
+						}
+					}
+				}
+			}
+			
+			
+			
 			
 			g1.add(card_i, g1);
 			
@@ -209,20 +249,45 @@ class FrameP extends JFrame{
 		
 		t.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		
-		JButton stack = new JButton("5");
-		stack.setPreferredSize(new Dimension(100,100));
+		// Settaggio colore carta in cima allo stack!!!
+		JButton stack = new JButton(g.numCard());
+		stack.setPreferredSize(new Dimension(50,50));
+		stack.setFont(new Font("Arial", Font.PLAIN, 25));
+		
+		if(g.colCard()=="giallo"){
+			stack.setForeground(Color.yellow);
+		}else{
+			if(g.colCard()=="verde"){
+				stack.setForeground(Color.green);
+			}else{
+				if(g.colCard()=="blu"){
+					stack.setForeground(Color.blue);
+				}else{
+					if(g.colCard()=="rosso"){
+						stack.setForeground(Color.red);
+					}
+				}
+			}
+		}
+		// Fine settaggio colore carta
 		
 		JButton pass = new JButton("Passa");
 		pass.addActionListener(new PlayGame());
 		
 		JButton uno = new JButton("UNO!!!");
 		
+		JButton avanza = new JButton("Avanza");
+		avanza.addActionListener(new PlayGame());
+		
+		JButton avanzaCPU = new JButton("Turno CPU");
+		avanzaCPU.addActionListener(new PlayGame());
+		
 		
 		JButton restart = new JButton("Ricomincia");
 		restart.addActionListener(new ResetGame());
 
 		JButton take = new JButton("Pesca");
-		take.setPreferredSize(new Dimension(100,100));
+		take.setPreferredSize(new Dimension(50,50));
 		take.addActionListener(new AddCard());
 
 		
@@ -230,6 +295,18 @@ class FrameP extends JFrame{
 		t.add(pass, t);
 		t.add(uno, t);
 		t.add(restart, t);
+		if(user_1=="CPU 1" && user_2=="CPU 2"){
+			
+			t.add(avanza, t);
+			
+		}else{
+			
+			if(user_1=="CPU 1" && user_2!="CPU 2"){
+				
+				t.add(avanzaCPU, t);
+				
+			}
+		}
 		t.add(take, t);
 		
 // Carte Giocatore 2
@@ -250,28 +327,49 @@ class FrameP extends JFrame{
 		g2.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		g2.setBackground(Color.RED);
 				
-		String deck2[] = new String [100];
-				
-		deck2[0]="3";
-		deck2[1]="2";
-		deck2[2]="+4";
-		deck2[3]="7";
-				
-				
-		for(int i = 0; i < deck.length & deck[i]!=null; i++){
-					
-			JButton card_i= new JButton(deck[i]);
-					
-			card_i.setPreferredSize(new Dimension(100,100));
-			card_i.setFont(new Font("Comic-sans", Font.PLAIN, 25));
-			card_i.setForeground(Color.RED);
-					
-			card_i.addActionListener(new PlayCard(deck[i], "red"));
-					
-			g2.add(card_i, g2);
-					
-					
+		List<Carta> mazzo2 = g.getMazzo(giocatori, 1);
+	
+		
+		
+		for(int i = 0; i < mazzo2.size(); i++){
+			
+			Carta curCard = mazzo2.get(i);
+			
+			
+			JButton card_j= new JButton(curCard.getTipocarta());
+			
+			card_j.setPreferredSize(new Dimension(50,50));
+			card_j.setFont(new Font("Arial", Font.PLAIN, 25));
+			
+			
+			if(curCard.getColore()=="giallo"){
+				card_j.setForeground(Color.yellow);
+				card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "giallo", curCard));
+			}else{
+				if(curCard.getColore()=="verde"){
+					card_j.setForeground(Color.green);
+					card_j.addActionListener(new PlayCard(curCard.getTipocarta(),  "verde", curCard));
+				}else{
+					if(curCard.getColore()=="blu"){
+						card_j.setForeground(Color.blue);
+						card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "blu", curCard));
+					}else{
+						if(curCard.getColore()=="rosso"){
+							card_j.setForeground(Color.red);
+							card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "rosso", curCard));
+						}else{
+							
+							card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "nero", curCard));
+							
+						}
+					}
+				}
+			}
+			
+			g2.add(card_j, g2);
+			
 		}
+		
 
 		
 // Definizione tavolo
@@ -366,6 +464,46 @@ private void ErrorCard() {
 		this.setVisible(true);
 		
 	}
+
+private void End() {
+	
+	c.removeAll();
+	
+	c = (JPanel)this.getContentPane();
+	this.setSize(300,200);
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	c.setLayout(new BorderLayout());
+	
+	Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+	
+	String plr;
+	
+	if(curPlayer == 0){
+		
+		plr = user_1;
+		
+	}else{
+		
+		plr = user_2;
+		
+	}
+	
+	JLabel played_card = new JLabel("Il giocatore " + plr + " ha vinto!");
+	
+	JLabel icn = new JLabel(icon);
+	
+	c.add(match, BorderLayout.NORTH);
+	c.add(icn, BorderLayout.WEST);
+	c.add(played_card, BorderLayout.CENTER);
+	
+	JButton Next = new JButton("Ricomincia");
+	c.add(Next, BorderLayout.SOUTH);
+	
+	Next.addActionListener(new ResetGame());
+	
+	this.setVisible(true);
+	
+}
 	
 	class ResetGame implements ActionListener{
 		
@@ -394,10 +532,22 @@ private void ErrorCard() {
 			if(button.getText()=="Inizia gioco"){
 				if(game_1.isSelected()){
 					InsertName();
+					
+					curPlayer = 1;
 					start.removeActionListener(this);
+					
+					
+					
 				}else{
 					
 						if(game_2.isSelected()){
+							
+							g = new Gioco();
+							
+							g.ciSonoGiocatoriUmani(false);
+							
+							g.avviaIlGioco();
+														
 							GameTable();
 							start.removeActionListener(this);
 						
@@ -417,6 +567,13 @@ private void ErrorCard() {
 			JButton button = (JButton)e.getSource();
 			if(button.getText()=="Continua"){
 				
+				
+				g = new Gioco();
+				
+				g.ciSonoGiocatoriUmani(true);
+				
+				g.avviaIlGioco();
+				
 				user_2 = your_name.getText();
 				GameTable();
 				cont.removeActionListener(this);
@@ -430,6 +587,16 @@ private void ErrorCard() {
 					
 					if(button.getText()=="Passa"){
 						
+						if(curPlayer==0){
+							
+							curPlayer = 1;
+							
+						}else{
+							
+							curPlayer = 0;
+							
+						}
+						
 						GameTable();
 						
 					}else{
@@ -437,6 +604,94 @@ private void ErrorCard() {
 						if(button.getText()=="Continua turno"){
 							
 							GameTable();
+							
+						}else{
+							
+							if(button.getText()=="Avanza"){
+								
+								GiocatoreCPU giocatoreAttuale = (GiocatoreCPU)g.getGiocatori().get(curPlayer);
+								
+								g.eseguiCPU(giocatoreAttuale);
+								
+								
+								
+								if(g.getFine()){
+									
+									End();
+									
+								}else{
+									
+									if(curPlayer==0){
+										
+										curPlayer=1;
+										
+									}else{
+										
+										curPlayer=0;
+										
+									}
+									
+									GameTable();
+									
+								}
+								
+							
+							}else{
+								
+								
+								
+								if(button.getText()=="Turno CPU"){
+									
+									System.out.print("Ciao" + curPlayer);
+									
+									GiocatoreCPU giocatoreAttuale = (GiocatoreCPU)g.getGiocatori().get(curPlayer);
+									
+									g.eseguiCPU(giocatoreAttuale);
+																		
+									if(g.getFine()){
+										
+										End();
+										
+									}else{
+										
+					
+										
+										if(curPlayer==0){
+											
+											curPlayer=1;
+											
+										}else{
+											
+											curPlayer=0;
+											
+										}
+									
+										if(g.numCard()=="+4"){
+											
+											g.pescaCarta(curPlayer, 4);
+											
+										}else{
+											
+											if(g.numCard()=="+2"){
+												
+												g.pescaCarta(curPlayer, 2);
+												
+											}
+											
+										}
+										
+										
+										GameTable();
+										
+									}
+									
+								
+								}
+								
+							}
+							
+							
+							
 							
 						}
 						
@@ -456,7 +711,18 @@ private void ErrorCard() {
 			
 			/*Operazioni relative al prelevamento della prima carta del mazzo e aggiunta al deck dell'utente in gioco*/
 			
-			ShowCardTaken("6", "Blu");
+			g.pescaCarta(curPlayer, 1);
+			
+//			if(curPlayer==0){
+//				
+//				curPlayer=1;
+//			}else{
+//				
+//				curPlayer=0;
+//				
+//			}
+			
+			GameTable();
 
 		}
 		
@@ -466,24 +732,40 @@ private void ErrorCard() {
 		
 		private final String num;
 		private final String color;
+		private final Carta curCard;
 		
 		
-		PlayCard(final String n, final String c){
+		PlayCard(final String n, final String c, final Carta cc){
 			
 			this.num = n;
 			this.color = c;
+			this.curCard = cc;
 			
 		}
 		
 		public void actionPerformed(ActionEvent e){
 				
-				String curNum = "4";
-				String curCol = "blu";
-			
-				if(num==curNum | color==curCol | num=="+4")
+				String curCol = g.colCard();
+				String curNum = g.numCard();
+				
+				if(num==curNum | color==curCol | num=="+4" | num=="cambia colore")
 				{
 					
-					ShowCard(num, color);
+					g.giocaCarta(curCard, curPlayer);
+					
+					if(curPlayer==0){
+						
+						curPlayer=1;
+						
+					}else{
+						
+						curPlayer=0;
+						
+					}
+					
+					
+					GameTable();
+					
 					
 				}else{
 					
