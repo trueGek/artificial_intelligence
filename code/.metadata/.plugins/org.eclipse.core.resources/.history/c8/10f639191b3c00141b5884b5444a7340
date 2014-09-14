@@ -35,14 +35,6 @@ class FrameP extends JFrame{
 	JButton cont = new JButton("Continua");
 	JButton start = new JButton("Inizia gioco");
 	JButton close = new JButton("Chiudi");
-	
-/*Per selettore colori*/
-	JRadioButton rosso = new JRadioButton("rosso");
-	JRadioButton giallo = new JRadioButton("giallo");
-	JRadioButton verde = new JRadioButton("verde");
-	JRadioButton blu = new JRadioButton("blu");
-
-	ButtonGroup colori = new ButtonGroup();
 
 /*Inserimento nome*/
 	String user_1 = "CPU 1";
@@ -411,8 +403,14 @@ class FrameP extends JFrame{
 		
 		JPanel col = new JPanel();
 		
-		col.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		col.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
 		
+		JRadioButton rosso = new JRadioButton("rosso");
+		JRadioButton giallo = new JRadioButton("giallo");
+		JRadioButton verde = new JRadioButton("verde");
+		JRadioButton blu = new JRadioButton("blu");
+	
+		ButtonGroup colori = new ButtonGroup();
 		
 		colori.add(rosso);
 		colori.add(giallo);
@@ -430,10 +428,10 @@ class FrameP extends JFrame{
 		
 		c.add(col, BorderLayout.CENTER);
 		
-		JButton Next = new JButton("Seleziona");
+		JButton Next = new JButton("Prossima mossa");
 		c.add(Next, BorderLayout.SOUTH);
 		
-		Next.addActionListener(new SetColor());
+		Next.addActionListener(new PlayGame());
 		
 		this.setVisible(true);
 		
@@ -758,60 +756,6 @@ private void End() {
 		
 	}
 	
-	
-	class SetColor implements ActionListener{
-		
-		public void actionPerformed(ActionEvent e){
-			
-			JButton button = (JButton)e.getSource();
-			if(button.getText()=="Seleziona"){
-				
-				if(rosso.isSelected()){
-					
-					g.setColoreCorrente("rosso");
-					
-				}else{
-					
-					if(blu.isSelected()){
-						
-						g.setColoreCorrente("blu");
-						
-					}else{
-						
-						if(verde.isSelected()){
-							
-							g.setColoreCorrente("verde");
-							
-						}else{
-							
-							if(giallo.isSelected()){
-								
-								g.setColoreCorrente("Giallo");
-								
-							}
-							
-						}
-						
-					}
-					
-				}
-				
-			}
-			
-			if(g.cimaPila().getTipocarta()=="cambia colore"){
-				
-				g.cimaPila().setUsata(true);
-				
-			}
-			
-			
-			GameTable();
-			
-		}
-		
-	}
-	
-	
 	class AddCard implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){
@@ -889,7 +833,7 @@ private void End() {
 					
 					if(num=="cambia colore"|num=="+4"){
 						
-						ShowChangeColor();
+						
 						
 					}else{
 					

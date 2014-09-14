@@ -191,10 +191,9 @@ public Boolean getFine(){
     	Giocatore giocatoreUmano;
     	giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
     	
-    	
     	Carta gioca = giocatoreUmano.GiocaCarta(curCard); // Grafica ok ma da sistemare GiocaCarta!!!
     	
-    	System.out.println(gioca.getTipocarta());
+    	//System.out.println(gioca.getTipocarta());
     	
     	this._gioco.ButtaCarta(gioca, plr);
     	

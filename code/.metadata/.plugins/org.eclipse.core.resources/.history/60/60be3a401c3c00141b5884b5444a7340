@@ -411,7 +411,7 @@ class FrameP extends JFrame{
 		
 		JPanel col = new JPanel();
 		
-		col.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		col.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
 		
 		
 		colori.add(rosso);
@@ -798,14 +798,6 @@ private void End() {
 				
 			}
 			
-			if(g.cimaPila().getTipocarta()=="cambia colore"){
-				
-				g.cimaPila().setUsata(true);
-				
-			}
-			
-			
-			GameTable();
 			
 		}
 		
@@ -889,7 +881,7 @@ private void End() {
 					
 					if(num=="cambia colore"|num=="+4"){
 						
-						ShowChangeColor();
+						
 						
 					}else{
 					

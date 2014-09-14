@@ -131,12 +131,6 @@ public Boolean getFine(){
     	
     }
     
-    public void setColoreCorrente(String c){
-    	
-    	this._gioco.setColoreCartaInGioco(c);
-    	
-    }
-    
     //dichiara UNO
     public void dichiaraUNO(String nomeGiocatore){
         //metodo che implementa l'avviso che si è arrivato ad UNO.
@@ -190,7 +184,6 @@ public Boolean getFine(){
     	
     	Giocatore giocatoreUmano;
     	giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
-    	
     	
     	Carta gioca = giocatoreUmano.GiocaCarta(curCard); // Grafica ok ma da sistemare GiocaCarta!!!
     	

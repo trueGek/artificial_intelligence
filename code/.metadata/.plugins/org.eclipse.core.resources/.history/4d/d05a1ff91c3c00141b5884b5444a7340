@@ -42,7 +42,6 @@ class FrameP extends JFrame{
 	JRadioButton verde = new JRadioButton("verde");
 	JRadioButton blu = new JRadioButton("blu");
 
-	ButtonGroup colori = new ButtonGroup();
 
 /*Inserimento nome*/
 	String user_1 = "CPU 1";
@@ -410,8 +409,9 @@ class FrameP extends JFrame{
 		c.setLayout(new BorderLayout());
 		
 		JPanel col = new JPanel();
-		
-		col.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		ButtonGroup colori = new ButtonGroup();
+
+		col.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
 		
 		
 		colori.add(rosso);
@@ -797,13 +797,6 @@ private void End() {
 				}
 				
 			}
-			
-			if(g.cimaPila().getTipocarta()=="cambia colore"){
-				
-				g.cimaPila().setUsata(true);
-				
-			}
-			
 			
 			GameTable();
 			

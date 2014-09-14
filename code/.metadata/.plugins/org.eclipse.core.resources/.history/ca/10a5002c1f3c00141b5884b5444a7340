@@ -801,6 +801,7 @@ private void End() {
 			if(g.cimaPila().getTipocarta()=="cambia colore"){
 				
 				g.cimaPila().setUsata(true);
+
 				
 			}
 			
