@@ -123,8 +123,8 @@ public class Giocatore {
                         return true;
                 }
         }
-        //se il colore tra le due carte è diverso e anche il simbolo è diverso allora ritorno false
-        if((cartaPresaInConsiderazione.getColore() != ultimoColoreValido) & (cartaPresaInConsiderazione.getTipocarta() != cartaSulBanco.getTipocarta())){
+      //se il colore tra le due carte è diverso e anche il simbolo è diverso allora ritorno false
+        if((cartaPresaInConsiderazione.getColore() != ultimoColoreValido) & (!cartaPresaInConsiderazione.getTipocarta().equals(cartaSulBanco.getTipocarta()))){
                 return false;
         }
         //se il colore è uguale tra le carte ritorno true
@@ -132,7 +132,7 @@ public class Giocatore {
                 return true;
         }
         //se il simbolo è uguale tra le carte ritorno true
-        if(cartaPresaInConsiderazione.getTipocarta() == cartaSulBanco.getTipocarta()){
+        if(cartaPresaInConsiderazione.getTipocarta().equals(cartaSulBanco.getTipocarta())){
                 return true;
         }
         return false;
