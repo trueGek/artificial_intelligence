@@ -1,0 +1,115 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass[11pt,a4paper,italian]{extarticle}
+\usepackage[italian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}%per usare le immagini
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{ifthen}
+\usepackage{wrapfig}
+\usepackage{indentfirst}
+\usepackage{fancyhdr} %pacchetto per le intestazioni
+\pagestyle{fancy} %uso del pacchetto
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{subfigure}
+
+\fancyhead{} %annulla head di default
+\fancyfoot{} %annulla foot di default
+\usepackage{lastpage} %setto pg di pgtot a rfoot
+\usepackage{booktabs}%pacchetto per tabelle nuove
+\usepackage{eurosym} %per avere simbolo euro
+\usepackage{multirow}%per avere celle su piu righe
+
+
+\usepackage[top=2cm,bottom=4cm,left=80pt,right=80pt]{geometry} %disegna la linea
+\setlength{\headheight}{2cm} %settato grandezza header
+
+\rfoot{pagina \thepage\ di \pageref{LastPage}}
+\lfoot{Versione: \versione} %setto versione doc a lfoot
+
+\renewcommand{\footrulewidth}{1.5pt} %ridefinisco il valore della riga di intestazione
+\renewcommand{\headrulewidth}{1.5pt} %ridefinisco il valore della riga di pie' di pagina
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{\marginparwidth}
+
+
+\hypersetup
+{
+	colorlinks=true,
+	linkcolor=blue,
+	urlcolor=blue
+}
+
+\cfoot{
+	\titolo \\ 
+}
+
+
+\newenvironment{infodocumento}{%
+	\begin{center}%
+		\begin{tabular}{r|l}%
+            \multicolumn{2}{c}{\large{\textbf{Informazioni sul documento}}}\\%
+			\hline%
+			
+}%
+{
+		\multirow{2}{*}{Distribuzione} & Alessandro Zonta, il tutor aziendale \\& e il tutor interno.
+		\end{tabular}%
+	\end{center}%
+}
+
+\newboolean{redarre}
+\newboolean{approvare}
+\newboolean{verificare}
+\newboolean{distribuire}
+\setboolean{redarre}{true}
+\setboolean{approvare}{true}
+\setboolean{verificare}{true}
+\setboolean{distribuire}{true}
+\newcommand{\Nome}[1]{\textbf{Nome}&#1\\}
+\newcommand{\Creazione}{\textbf{Data di creazione}&\datacreazione\\}
+\newcommand{\Versione}{\textbf{Versione}&\versione\\}
+\newcommand{\UltimaModifica}{\textbf{Data di ultima modifica}&\today\\}
+\newcommand{\Formale}{\textbf{Stato}&Formale\\}
+\newcommand{\Preliminare}{\textbf{Stato}&Preliminare\\}
+\newcommand{\Esterno}{\textbf{Uso}&Esterno\\}
+\newcommand{\Interno}{\textbf{Uso}&Interno\\}
+
+
+\newcommand{\Reda}[1]{\hline \textbf{Redazione}&\parbox{0.65\textwidth}{#1}\\}
+
+\newcommand{\Ver}[1] {\hline \textbf{Verificatore}&\parbox{0.65\textwidth}{#1}\\}
+
+\newcommand{\App}[1] {\hline \textbf{Approvazione}&\parbox{0.65\textwidth}{#1}\\}
+  
+
+
+
+\newenvironment{regmodifiche}{%
+	\vspace{60px}
+	\begin{Large}
+    	\textbf{Registro delle modifiche}\\\\%
+	 \end{Large}\\
+	 \begin{tabular}{|c|c|c|}%
+    	\hline
+    	\parbox{0.25\textwidth}{Data \& Autore} & 
+    	\parbox{0.1\textwidth}{Versione} & 
+    	\parbox{0.57\textwidth}{Modifiche}\\
+    	\hline
+ 	\end{tabular}
+}%
+
+\newcommand{\modifica}[4]{
+		\begin{tabular}{|c|c|c|}%
+			\parbox{0.25\textwidth}{\ \\ #1 \\ #3\\} & 
+			\parbox{0.1\textwidth}{#2} & 
+			\parbox{0.57\textwidth}{#4}\\ 
+			\hline
+		\end{tabular}%
+}

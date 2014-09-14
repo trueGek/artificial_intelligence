@@ -1,0 +1,19 @@
+\BOOKMARK [1][-]{section.1}{Introduzione}{}% 1
+\BOOKMARK [1][-]{section.2}{Ricerca con avversari}{}% 2
+\BOOKMARK [1][-]{section.3}{Il Gioco di carte UNO}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Le carte}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Obiettivo del gioco}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Procediemnto del Gioco}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Funzione delle carte Azione}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{Implementazione}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{La scelta della libreria Swing}{}% 9
+\BOOKMARK [2][-]{subsection.4.1}{Struttura grafica dell'applicazione}{section.4}% 10
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Principali informazioni sul codice della componente grafica}{subsection.4.1}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Gestione degli eventi}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Gestione Logica}{}% 13
+\BOOKMARK [2][-]{subsection.5.1}{Carta}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.2}{Mazzo}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.3}{Giocatore}{section.5}% 16
+\BOOKMARK [2][-]{subsection.5.4}{GiocatoreCPU}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.5}{GiocoUno}{section.5}% 18
+\BOOKMARK [1][-]{section.6}{Controller}{}% 19
