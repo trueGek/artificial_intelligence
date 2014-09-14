@@ -463,7 +463,7 @@ public class GiocatoreCPU extends Giocatore {
                 this._riferimentoGiocoUno.getControllerGioco().avvisoCambioColore(coloreScelto, false);
             }
             //se la carta giocata ha lo stesso simbolo ma è di colore diverso devo cambiare il colore di gioco
-            if(cartaSelezionata.getColore() != ColoreOriginario & cartaSelezionata.getTipocarta() == CimaMazzo.getTipocarta()) this._riferimentoGiocoUno.setColoreCartaInGioco(cartaSelezionata.getColore());
+            if(cartaSelezionata.getColore() != ColoreOriginario & cartaSelezionata.getTipocarta().equals(CimaMazzo.getTipocarta())) this._riferimentoGiocoUno.setColoreCartaInGioco(cartaSelezionata.getColore());
 			//ritorno questa carta
 			return cartaSelezionata;
 		}else{
@@ -557,12 +557,12 @@ public class GiocatoreCPU extends Giocatore {
 			return "verde";
 		}
         //se non ce ne è uno predominante trovo i due predominanti e ne ritorno uno a caso
-        if(rosso == blu) return "rosso";
-        if(rosso == giallo) return "giallo";
-        if(rosso == verde) return "rosso";
-        if(blu == giallo) return "blu";
-        if(blu == verde) return "blu";
-        if(giallo == verde) return "verde";
+		if(rosso == blu & rosso > giallo & rosso > verde) return "rosso";
+        if(rosso == giallo & rosso > blu & rosso > verde) return "giallo";
+        if(rosso == verde & rosso > blu & rosso > giallo) return "rosso";
+        if(blu == giallo & blu > rosso & blu > verde) return "blu";
+        if(blu == verde & blu > rosso & blu > giallo) return "blu";
+        if(giallo == verde & giallo > blu & giallo > rosso) return "verde";
 		//se nessun colore domina lo scelgo random ma diverso da quello precedente
 		Integer randomNum = 0 + (int)(Math.random()*100); 
 		if(randomNum < 25 ) return "rosso" != vecchioColore ? "rosso" : "blu";
