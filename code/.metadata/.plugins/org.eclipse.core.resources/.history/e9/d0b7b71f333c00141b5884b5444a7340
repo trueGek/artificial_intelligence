@@ -693,9 +693,9 @@ private void End() {
 											curPlayer=1;
 											
 										}else{
-											if(curPlayer==1){
+											
 											curPlayer=0;
-											}
+											
 										}
 									
 										if(g.numCard()=="+4"&&g.cimaPila().getUsata()!=true){
@@ -715,7 +715,7 @@ private void End() {
 											}else{
 												
 												
-												if(g.numCard()=="cambia colore"&&g.cimaPila().getUsata()!=true){
+												if(g.numCard()=="cambia colore"){
 													
 													ShowCardTaken();
 													
@@ -894,7 +894,7 @@ private void End() {
 					}
 					
 					
-					if((num=="cambia colore")|num=="+4"){
+					if(num=="cambia colore"|num=="+4"){
 						
 						ShowChangeColor();
 						

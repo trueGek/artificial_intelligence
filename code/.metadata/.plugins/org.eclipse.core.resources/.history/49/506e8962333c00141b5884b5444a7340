@@ -715,7 +715,7 @@ private void End() {
 											}else{
 												
 												
-												if(g.numCard()=="cambia colore"&&g.cimaPila().getUsata()!=true){
+												if(g.numCard()=="cambia colore"){
 													
 													ShowCardTaken();
 													
