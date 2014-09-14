@@ -39,6 +39,12 @@ public class GiocoUno {
 		
 	}
 	
+	public Carta getPrimaCarta(){
+		
+		
+		return _mazzoTotale.CartaInCima();
+	}
+	
 	public Boolean getGiocoFinito(){
 		
 		return _giocoFinito;
@@ -296,6 +302,7 @@ public class GiocoUno {
             this._controller.avvisaTurnoUmano();
         }
 	}
+	
 	
         //azioni svolte dall'intelligenza artificiale durante il gioco
 	public void AzioneCPU(GiocatoreCPU giocatoreAttuale){

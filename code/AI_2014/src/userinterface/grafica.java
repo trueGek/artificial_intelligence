@@ -136,6 +136,7 @@ class FrameP extends JFrame{
 	}
 	
 	private void GameTable(){
+
 		
 		c.removeAll();
 		c = (JPanel)this.getContentPane();
@@ -414,7 +415,7 @@ class FrameP extends JFrame{
 		
 	}
 	
-	private void ShowCardTaken(String x, String y) {
+	private void ShowCardTaken() {
 		
 		c.removeAll();
 		
@@ -423,7 +424,7 @@ class FrameP extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		c.setLayout(new BorderLayout());
 		
-		JLabel played_card = new JLabel("Hai percato il " + x + " " + y);
+		JLabel played_card = new JLabel("Il colore scelto  " + g.coloreCorrente());
 		
 		c.add(match, BorderLayout.NORTH);
 		c.add(played_card, BorderLayout.CENTER);
@@ -587,6 +588,14 @@ private void End() {
 					
 					if(button.getText()=="Passa"){
 						
+						
+						if(g.cimaPila().getTipocarta()=="stop"|g.cimaPila().getTipocarta()=="inverti giro"){
+							
+							g.cimaPila().setUsata(true);
+							System.out.print("Stop o inverti");
+							
+						}
+						
 						if(curPlayer==0){
 							
 							curPlayer = 1;
@@ -642,7 +651,6 @@ private void End() {
 								
 								if(button.getText()=="Turno CPU"){
 									
-									System.out.print("Ciao" + curPlayer);
 									
 									GiocatoreCPU giocatoreAttuale = (GiocatoreCPU)g.getGiocatori().get(curPlayer);
 									
@@ -666,22 +674,43 @@ private void End() {
 											
 										}
 									
-										if(g.numCard()=="+4"){
+										if(g.numCard()=="+4"&&g.cimaPila().getUsata()!=true){
 											
 											g.pescaCarta(curPlayer, 4);
+											g.cimaPila().setUsata(true);
+											GameTable();
+											
 											
 										}else{
 											
-											if(g.numCard()=="+2"){
-												
+											if(g.numCard()=="+2"&&g.cimaPila().getUsata()!=true){
 												g.pescaCarta(curPlayer, 2);
+												g.cimaPila().setUsata(true);
+												GameTable();
 												
+											}else{
+												
+												
+												if(g.numCard()=="cambia colore"){
+													
+													ShowCardTaken();
+													
+												}else{
+												
+													
+													
+												GameTable();
+											
+												}
+											
 											}
+											
+											
 											
 										}
 										
 										
-										GameTable();
+										
 										
 									}
 									
@@ -713,14 +742,14 @@ private void End() {
 			
 			g.pescaCarta(curPlayer, 1);
 			
-//			if(curPlayer==0){
-//				
-//				curPlayer=1;
-//			}else{
-//				
-//				curPlayer=0;
-//				
-//			}
+			if(curPlayer==0){
+				
+				curPlayer=1;
+			}else{
+				
+				curPlayer=0;
+				
+			}
 			
 			GameTable();
 
@@ -748,7 +777,23 @@ private void End() {
 				String curCol = g.colCard();
 				String curNum = g.numCard();
 				
-				if(num==curNum | color==curCol | num=="+4" | num=="cambia colore")
+				int actual = -1;
+				
+				if(curNum!="+2"&&curNum!="stop"&&curNum!="inverti giro"&&curNum!="+4"&&curNum!="cambia colore"){
+					
+					actual = Integer.parseInt(curNum);
+					
+					if((actual>=0 && actual==Integer.parseInt(curNum))){
+						
+						System.out.print("Conversione numeri ok");
+					}
+				}
+				
+				
+				
+//				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" | (actual>=0 && actual==Integer.parseInt(num)))
+				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" )
+
 				{
 					
 					g.giocaCarta(curCard, curPlayer);

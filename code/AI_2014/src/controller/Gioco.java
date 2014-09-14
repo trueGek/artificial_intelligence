@@ -112,9 +112,22 @@ public Boolean getFine(){
         this._gioco.ProseguiGiocoCasoGiocatoriSoloCPU();
     }
     
+    public Carta cimaPila(){
+    	
+    	return this._gioco.getPrimaCarta();
+    	
+    }
+    
     public void eseguiCPU(GiocatoreCPU att){
     	
+    	
     	this._gioco.AzioneCPU(att);
+    	
+    }
+    
+    public String coloreCorrente(){
+    	
+    	return this._gioco.getColoreCartaInGioco();
     	
     }
     
@@ -172,9 +185,7 @@ public Boolean getFine(){
     	Giocatore giocatoreUmano;
     	giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
     	
-    	System.out.println("Ciao");
-    	
-    	Carta gioca = giocatoreUmano.GiocaCarta(curCard);
+    	Carta gioca = giocatoreUmano.GiocaCarta(curCard); // Grafica ok ma da sistemare GiocaCarta!!!
     	
     	System.out.println(gioca.getTipocarta());
     	
