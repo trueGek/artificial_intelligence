@@ -899,9 +899,7 @@ private void End() {
 						ShowChangeColor();
 						
 					}else{
-						
-						g.setColoreCorrente(curCard.getColore());
-						
+					
 						GameTable();
 					}
 					
