@@ -769,7 +769,8 @@ private void End() {
 				if(rosso.isSelected()){
 					
 					g.setColoreCorrente("rosso");
-					
+					System.out.println("1");
+					System.out.println(g.coloreCorrente());
 
 					
 				}else{
@@ -777,7 +778,8 @@ private void End() {
 					if(blu.isSelected()){
 						
 						g.setColoreCorrente("blu");
-						
+						System.out.println("2");
+						System.out.println(g.coloreCorrente());
 
 						
 					}else{
@@ -785,7 +787,8 @@ private void End() {
 						if(verde.isSelected()){
 							
 							g.setColoreCorrente("verde");
-							
+							System.out.println("3");
+							System.out.println(g.coloreCorrente());
 
 							
 						}else{
@@ -793,7 +796,9 @@ private void End() {
 							if(giallo.isSelected()){
 								
 								g.setColoreCorrente("giallo");
+								System.out.println("4");
 								
+								System.out.println(g.coloreCorrente());
 								
 							}
 							
