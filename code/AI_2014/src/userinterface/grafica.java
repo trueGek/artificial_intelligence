@@ -36,6 +36,9 @@ class FrameP extends JFrame{
 	JButton start = new JButton("Inizia gioco");
 	JButton close = new JButton("Chiudi");
 	
+	String curAction;
+	
+	
 /*Per selettore colori*/
 	JRadioButton rosso = new JRadioButton("rosso");
 	JRadioButton giallo = new JRadioButton("giallo");
@@ -140,6 +143,7 @@ class FrameP extends JFrame{
 		c.add(Box.createRigidArea(new Dimension(0,10)));
 		c.add(cont, c);
 		
+		this.setVisible(false);
 		this.setVisible(true);
 	}
 	
@@ -283,6 +287,7 @@ class FrameP extends JFrame{
 		JButton pass = new JButton("Passa");
 		pass.addActionListener(new PlayGame());
 		
+		
 		JButton uno = new JButton("UNO!!!");
 		
 		JButton avanza = new JButton("Avanza");
@@ -299,6 +304,30 @@ class FrameP extends JFrame{
 		take.setPreferredSize(new Dimension(50,50));
 		take.addActionListener(new AddCard());
 
+		
+		if(curAction=="CPUTurn"){
+			
+			pass.setEnabled(false);
+			uno.setEnabled(false);
+			take.setEnabled(false);
+			
+		}else{
+			
+			if(curAction == "USRPass"){
+				
+				uno.setEnabled(false);
+				avanzaCPU.setEnabled(false);
+				take.setEnabled(false);
+
+			}else{
+				
+				pass.setEnabled(false);
+				avanzaCPU.setEnabled(false);
+				
+			}
+			
+		}
+		
 		
 		t.add(stack, t);
 		t.add(pass, t);
@@ -373,6 +402,12 @@ class FrameP extends JFrame{
 						}
 					}
 				}
+			}
+			
+			if(curAction=="CPUTurn"|curAction=="USRPass"){
+				
+				card_j.setEnabled(false);
+				
 			}
 			
 			g2.add(card_j, g2);
@@ -495,11 +530,11 @@ private void End() {
 	c.removeAll();
 	
 	c = (JPanel)this.getContentPane();
-	this.setSize(300,200);
+	this.setSize(350,200);
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	c.setLayout(new BorderLayout());
 	
-	Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+	Icon icon = UIManager.getIcon("OptionPane.informationIcon");
 	
 	String plr;
 	
@@ -513,7 +548,7 @@ private void End() {
 		
 	}
 	
-	JLabel played_card = new JLabel("Il giocatore " + plr + " ha vinto!");
+	JLabel played_card = new JLabel(plr + " ha vinto!");
 	
 	JLabel icn = new JLabel(icon);
 	
@@ -540,6 +575,8 @@ private void End() {
 				c.removeAll();
 				
 				user_2 = "CPU 2";
+				
+				curAction="UserTurn";
 				
 				FrameStart();
 				
@@ -590,6 +627,7 @@ private void End() {
 		public void actionPerformed(ActionEvent e){
 			
 			JButton button = (JButton)e.getSource();
+			
 			if(button.getText()=="Continua"){
 				
 				
@@ -612,6 +650,8 @@ private void End() {
 					
 					if(button.getText()=="Passa"){
 						
+						
+						curAction="CPUTurn";
 						
 						if(g.cimaPila().getTipocarta()=="stop"|g.cimaPila().getTipocarta()=="inverti giro"){
 							
@@ -675,11 +715,14 @@ private void End() {
 								
 								if(button.getText()=="Turno CPU"){
 									
+								
 									
 									GiocatoreCPU giocatoreAttuale = (GiocatoreCPU)g.getGiocatori().get(curPlayer);
 									
 									g.eseguiCPU(giocatoreAttuale);
-																		
+									
+									
+									
 									if(g.getFine()){
 										
 										End();
@@ -697,9 +740,21 @@ private void End() {
 											curPlayer=0;
 											}
 										}
-									
+										
+										if(((g.numCard()=="stop"|g.numCard()=="inverti giro")&&g.cimaPila().getUsata()!=true)){
+											
+											
+											curAction="USRPass";
+										}else{
+											
+											curAction="UserTurn";
+											
+										}
+										
+										
 										if(g.numCard()=="+4"&&g.cimaPila().getUsata()!=true){
 											
+											curAction = "USRPass";
 											g.pescaCarta(curPlayer, 4);
 											g.cimaPila().setUsata(true);
 											GameTable();
@@ -708,6 +763,8 @@ private void End() {
 										}else{
 											
 											if(g.numCard()=="+2"&&g.cimaPila().getUsata()!=true){
+												
+												curAction = "USRPass";
 												g.pescaCarta(curPlayer, 2);
 												g.cimaPila().setUsata(true);
 												GameTable();
@@ -831,8 +888,12 @@ private void End() {
 				
 				curPlayer=1;
 			}else{
-				
-				curPlayer=0;
+				if(curPlayer==1){
+					
+					curAction="CPUTurn";
+					curPlayer=0;	
+					
+				}
 				
 			}
 			
@@ -867,49 +928,65 @@ private void End() {
 				if(curNum!="+2"&&curNum!="stop"&&curNum!="inverti giro"&&curNum!="+4"&&curNum!="cambia colore"){
 					
 					actual = Integer.parseInt(curNum);
-					
-					if((actual>=0 && actual==Integer.parseInt(curNum))){
-						
-						System.out.print("Conversione numeri ok");
-					}
+
 				}
 				
 				
 				
-//				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" | (actual>=0 && actual==Integer.parseInt(num)))
 				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" | (actual>=0 && actual==Integer.parseInt(curNum)))
-
 				{
 					
 					g.giocaCarta(curCard, curPlayer);
 					
-					if(curPlayer==0){
+					List<Object> giocatori = g.getGiocatori();
+					
+					List<Carta> mazzo = g.getMazzo(giocatori, 1);
+					
+					if(mazzo.isEmpty()){
 						
-						curPlayer=1;
+						End();
 						
 					}else{
-						if(curPlayer==1){
-						curPlayer=0;
+						
+						if(curPlayer==0){
+							
+							curPlayer=1;
+							
+						}else{
+							if(curPlayer==1){
+
+							curPlayer=0;
+							
+							
+							
+							}
+						}
+						
+						
+						if((num=="cambia colore")|num=="+4"){
+							
+							curAction = "CPUTurn";
+							
+							ShowChangeColor();
+							
+						}else{
+							
+							g.setColoreCorrente(curCard.getColore());
+							
+							curAction = "CPUTurn";
+							
+							GameTable();
 						}
 					}
-					
-					
-					if((num=="cambia colore")|num=="+4"){
-						
-						ShowChangeColor();
-						
 					}else{
 						
-						g.setColoreCorrente(curCard.getColore());
+						ErrorCard();
 						
-						GameTable();
+					
+						
 					}
-					
-				}else{
-					
-					ErrorCard();
-					
-				}
+				
+				
 			
 		}
 		
