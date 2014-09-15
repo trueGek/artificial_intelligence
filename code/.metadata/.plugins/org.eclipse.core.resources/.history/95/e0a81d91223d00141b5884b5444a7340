@@ -328,7 +328,6 @@ class FrameP extends JFrame{
 		if(user_1=="CPU 1" && user_2=="CPU 2"){
 			
 			t.add(avanza, t);
-			take.setEnabled(false);
 			
 		}else{
 			
@@ -376,25 +375,25 @@ class FrameP extends JFrame{
 			if(curCard.getColore()=="giallo"){
 				card_j.setForeground(Color.yellow);
 				
-				if (user_2!="CPU 2"){
+				if (user_2!="CPU2"){
 					card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "giallo", curCard));}
 			}else{
 				if(curCard.getColore()=="verde"){
 					card_j.setForeground(Color.green);
-					if (user_2!="CPU 2"){
+					if (user_2!="CPU2"){
 					card_j.addActionListener(new PlayCard(curCard.getTipocarta(),  "verde", curCard));}
 				}else{
 					if(curCard.getColore()=="blu"){
 						card_j.setForeground(Color.blue);
-						if (user_2!="CPU 2"){
+						if (user_2!="CPU2"){
 						card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "blu", curCard));}
 					}else{
 						if(curCard.getColore()=="rosso"){
 							card_j.setForeground(Color.red);
-							if (user_2!="CPU 2"){
+							if (user_2!="CPU2"){
 							card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "rosso", curCard));}
 						}else{
-							if (user_2!="CPU 2"){
+							if (user_2!="CPU2"){
 							card_j.addActionListener(new PlayCard(curCard.getTipocarta(), "nero", curCard));}
 							
 						}
@@ -602,8 +601,6 @@ private void End() {
 				user_2 = "CPU 2";
 				
 				curAction="UserTurn";
-				
-				curPlayer=0;
 				
 				FrameStart();
 				

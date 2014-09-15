@@ -328,7 +328,6 @@ class FrameP extends JFrame{
 		if(user_1=="CPU 1" && user_2=="CPU 2"){
 			
 			t.add(avanza, t);
-			take.setEnabled(false);
 			
 		}else{
 			
@@ -602,8 +601,6 @@ private void End() {
 				user_2 = "CPU 2";
 				
 				curAction="UserTurn";
-				
-				curPlayer=0;
 				
 				FrameStart();
 				

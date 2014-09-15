@@ -603,7 +603,7 @@ private void End() {
 				
 				curAction="UserTurn";
 				
-				curPlayer=0;
+				curPlayer=0
 				
 				FrameStart();
 				
