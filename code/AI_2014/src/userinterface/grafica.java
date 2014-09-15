@@ -96,6 +96,8 @@ class FrameP extends JFrame{
 		start.setEnabled(true);
 		close.setEnabled(true);
 		
+		close.addActionListener(new CloseGame(this));
+		
 		ts_buttons2.setLayout(new FlowLayout());
 		ts_buttons2.add(start);
 		ts_buttons2.add(close);
@@ -287,9 +289,7 @@ class FrameP extends JFrame{
 		JButton pass = new JButton("Passa");
 		pass.addActionListener(new PlayGame());
 		
-		
-		JButton uno = new JButton("UNO!!!");
-		
+				
 		JButton avanza = new JButton("Avanza");
 		avanza.addActionListener(new PlayGame());
 		
@@ -308,14 +308,12 @@ class FrameP extends JFrame{
 		if(curAction=="CPUTurn"){
 			
 			pass.setEnabled(false);
-			uno.setEnabled(false);
 			take.setEnabled(false);
 			
 		}else{
 			
 			if(curAction == "USRPass"){
 				
-				uno.setEnabled(false);
 				avanzaCPU.setEnabled(false);
 				take.setEnabled(false);
 
@@ -331,7 +329,6 @@ class FrameP extends JFrame{
 		
 		t.add(stack, t);
 		t.add(pass, t);
-		t.add(uno, t);
 		t.add(restart, t);
 		if(user_1=="CPU 1" && user_2=="CPU 2"){
 			
@@ -536,19 +533,46 @@ private void End() {
 	
 	Icon icon = UIManager.getIcon("OptionPane.informationIcon");
 	
-	String plr;
+	String plr="pari";
 	
-	if(curPlayer == 0){
+	
+	List<Object> gioc = g.getGiocatori();
 		
-		plr = user_1;
+	List<Carta> mazzo1 = g.getMazzo(gioc, 0);
+	List<Carta> mazzo2 = g.getMazzo(gioc, 1);
+	
+	System.out.println("Mazzo 1 " + mazzo1.size() + " Mazzo 2 " + mazzo2.size());
+	
+	if(mazzo1.size()>mazzo2.size()){
+			
+			plr = user_2;
+			
+	}else{
+		if(mazzo1.size()<mazzo2.size()){
+			plr = user_1;
+		}else{
+				
+			if(mazzo1.size()==mazzo2.size()){
+					
+				plr = "pari";
+					
+			}
+				
+		}
+	}
+		
+	
+	JLabel played_card;
+	
+	if(plr == "pari"){
+		
+		played_card = new JLabel("Partita finita in paritˆ");
 		
 	}else{
 		
-		plr = user_2;
+		played_card = new JLabel(plr + " ha vinto!");
 		
 	}
-	
-	JLabel played_card = new JLabel(plr + " ha vinto!");
 	
 	JLabel icn = new JLabel(icon);
 	
@@ -622,6 +646,29 @@ private void End() {
 		
 	}
 	
+	
+class CloseGame implements ActionListener {
+		
+		private final JFrame window;
+		
+		CloseGame(final JFrame f){
+			
+			this.window = f;
+			
+		}
+		
+		public void actionPerformed(ActionEvent e){
+			
+			JButton button = (JButton)e.getSource();
+			if(button.getText()=="Chiudi"){
+				window.dispose();
+			}
+			
+		}
+		
+	}
+	
+	
 	class PlayGame implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){
@@ -688,7 +735,7 @@ private void End() {
 								
 								
 								
-								if(g.getFine()){
+								if(g.getFine()| g.getMazzoTot().getCarteDelMazzo().isEmpty()){
 									
 									End();
 									
@@ -723,7 +770,7 @@ private void End() {
 									
 									
 									
-									if(g.getFine()){
+									if(g.getFine()| g.getMazzoTot().getCarteDelMazzo().isEmpty()){
 										
 										End();
 										
@@ -923,18 +970,26 @@ private void End() {
 				String curCol = g.colCard();
 				String curNum = g.numCard();
 				
-				int actual = -1;
+				int actualS = -1;
+				int actualM = 100;
 				
 				if(curNum!="+2"&&curNum!="stop"&&curNum!="inverti giro"&&curNum!="+4"&&curNum!="cambia colore"){
 					
-					actual = Integer.parseInt(curNum);
+					actualS = Integer.parseInt(curNum);
+
+				}
+				
+				if(num!="+2"&&num!="stop"&&num!="inverti giro"&&num!="+4"&&num!="cambia colore"){
+					
+					actualM = Integer.parseInt(num);
 
 				}
 				
 				
 				
-				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" | (actual>=0 && actual==Integer.parseInt(curNum)))
+				if(num==curNum | color==g.coloreCorrente() | num=="+4" | num=="cambia colore" | (actualS>=0 && actualS==actualM))
 				{
+					
 					
 					g.giocaCarta(curCard, curPlayer);
 					
@@ -942,7 +997,7 @@ private void End() {
 					
 					List<Carta> mazzo = g.getMazzo(giocatori, 1);
 					
-					if(mazzo.isEmpty()){
+					if(mazzo.isEmpty()| g.getMazzoTot().getCarteDelMazzo().isEmpty()){
 						
 						End();
 						
