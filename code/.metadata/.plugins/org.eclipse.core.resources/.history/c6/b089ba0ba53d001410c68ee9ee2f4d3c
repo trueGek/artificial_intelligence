@@ -262,7 +262,7 @@ class FrameP extends JFrame{
 		// Settaggio colore carta in cima allo stack!!!
 		JButton stack = new JButton(g.numCard());
 		stack.setPreferredSize(new Dimension(50,50));
-		stack.setFont(new Font("Arial", Font.PLAIN, 16));
+		stack.setFont(new Font("Arial", Font.PLAIN, 25));
 		
 		if(g.colCard()=="giallo"){
 			stack.setForeground(Color.yellow);
@@ -370,7 +370,7 @@ class FrameP extends JFrame{
 			JButton card_j= new JButton(curCard.getTipocarta());
 			
 			card_j.setPreferredSize(new Dimension(50,50));
-			card_j.setFont(new Font("Arial", Font.PLAIN, 16));
+			card_j.setFont(new Font("Arial", Font.PLAIN, 25));
 			
 			
 			if(curCard.getColore()=="giallo"){
