@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/W32TeX) (format=pdflatex 2013.11.6)  16 SEP 2014 16:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/W32TeX) (format=pdflatex 2013.11.6)  16 SEP 2014 18:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -969,23 +969,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 518--519
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 531--532
+Underfull \hbox (badness 10000) in paragraph at lines 532--533
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 531--532
+Underfull \hbox (badness 10000) in paragraph at lines 532--533
 
  []
 
 [21] 
 AED: lastpage setting LastPage
 [22]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 553.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 553.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 554.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 554.
  (./relazione.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 553.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 553.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 554.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 554.
 Package rerunfilecheck Info: File `relazione.out' has not changed.
 (rerunfilecheck)             Checksum: 2B23EF19BD895AEE48E5835EA8F67FAD;1935.
  ) 
@@ -1010,7 +1010,7 @@ lm/lmr10.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/public
 c/lm/lmr17.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/publ
 ic/lm/lmri10.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/pu
 blic/lm/lmsy10.pfb>
-Output written on relazione.pdf (23 pages, 673506 bytes).
+Output written on relazione.pdf (23 pages, 673820 bytes).
 PDF statistics:
  556 PDF objects out of 1000 (max. 8388607)
  507 compressed objects within 6 object streams
