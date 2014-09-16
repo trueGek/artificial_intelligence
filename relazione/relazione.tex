@@ -303,20 +303,25 @@ for(int i = 0; i < carteInManoMax.size(); i++){
 //se la carta giocata ha lo stesso simbolo ma e' di colore
  diverso devo cambiare il colore di gioco
    if(rimossa.getColore() != ultimoColoreValido & rimossa.getTipocarta()
-    == ultimaCartaGiocata.getTipocarta()) ultimoColoreValido = rimossa.getColore();
+    == ultimaCartaGiocata.getTipocarta()) ultimoColoreValido =
+     rimossa.getColore();
 //mi faccio restituire valore funzione obiettivo da min
-    int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin, carteInManoMax, 
-    carteInTavola, mazzoCarteTotali, alfa, beta, isMinimax, livello, ultimoColoreValido); 
-//assegno valore restituito a carta cosi' alla fine so quale albero prendere
+    int valRestituitoAzioneGiocata = this.TurnoDiMin(carteInManoMin,
+    carteInManoMax, carteInTavola, mazzoCarteTotali, alfa, beta
+    , isMinimax, livello, ultimoColoreValido); 
+//assegno valore restituito a carta cosi' alla fine so quale
+//albero prendere
     rimossa.setValore(valRestituitoAzioneGiocata);
 ..... sistemazione liste stato post ricorsione
-//ora devo assegnare a valori il malore massimo tra valori e valRestituitoAzioneGiocata
+//ora devo assegnare a valori il malore massimo tra valori
+// e valRestituitoAzioneGiocata
 //in valori e' salvato sempre il valore massimio
     if(valRestituitoAzioneGiocata > valori){
       valori = valRestituitoAzioneGiocata;
     }
 //controllo se sto facendo potatura alfa beta o no
-    if(!isMinimax){//se e' false sto facendo potatura quindi inserisco codice per potatura
+    if(!isMinimax){//se e' false sto facendo potatura quindi
+    // inserisco codice per potatura
     if(valRestituitoAzioneGiocata >= beta){
       return valRestituitoAzioneGiocata;
   }
@@ -329,10 +334,12 @@ for(int i = 0; i < carteInManoMax.size(); i++){
 countNumeroCarteGiocate++;
 }
 }
-//se le carte giocate sono pari a 0 vuol dire che non ho giocato nessuna carta
- perche' non potevo e che quindi mi tocca pescare una carta
+//se le carte giocate sono pari a 0 vuol dire che non ho giocat
+ //o nessuna carta perche' non potevo e che quindi mi tocca
+ // pescare una carta
 if(countNumeroCarteGiocate == 0){
-return 0; //non ha senso cercare perche' tanto questa e' l'unica azione disponibile
+return 0; //non ha senso cercare perche' tanto questa e' 
+//l'unica azione disponibile
 }
 //ritorno valori (valore massimo funzione max)
 return valori;	
@@ -342,7 +349,7 @@ return valori;
 		TurnoDiMin, come dice il nome, implementa la parte di MIN dell'algoritmo. È strutturato esattamente come TurnoDiMax con la differenza che piuttosto di ritornare il massimo valore ritorna il minimo e nel caso della Potatura $\alpha$-$\beta$ se il valore restituito dalla chiamata ricorsiva è minore di $\alpha$ allora posso restituire tale valore non visitando i rimanenti sottoalberi, altrimenti aggiorno $\beta$.
 		
 		\paragraph{Test di taglio}
-		Si è visto che ricercare una soluzione esatta con il Minimax non è fattibile dato numero medio di ramificazioni pari a 24 e massima profondità raggiungibile pari a circa 48. Per questo si è scelto di limitare la profondità di ricerca utilizzando un test di taglio e una funzione di valutazione. È stato scelto un limite di profondità che porta in media la conclusione della partita in tempi rapidi anche se certe mosse richiedono comunue abbastanza tempo per essere ``pensate''. Come funzione di valutazione si è scelto di restituire un valore calcolato da tale formula.\\\\
+		Si è visto che ricercare una soluzione esatta con il Minimax non è fattibile dato numero medio di ramificazioni pari a 24 e massima profondità raggiungibile pari a circa 48. In realtà si è notato che nell'applicazione reale dell'algoritmo è raro che si raggiunga questa estensione dell'albero. In ogni caso si è scelto di limitare la profondità di ricerca utilizzando un test di taglio e una funzione di valutazione. È stato scelto un limite di profondità che porta in media la conclusione della partita in tempi rapidi anche se certe mosse richiedono comunue abbastanza tempo per essere ``pensate''. Come funzione di valutazione si è scelto di restituire un valore calcolato da tale formula.\\\\
 		
 		$ [- (carteInManoIo - carteInManoAvversario)] + (carteGiocabiliIo - carteGiocabiliAvversario) $\\\\
 		
@@ -358,6 +365,125 @@ return valori;
 		Questa classe gestisce la gestione dell'intero gioco. Presenta come attributi la lista dei giocatori, il riferimento al mazzo, variabili booleane che controllano se ci sono giocatori umani, la tipologia dell'algoritmo e se il gioco è finito. Tiene traccia del colore attuale in gioco e il riferimento al controller che si occupa di far interagire la grafica con la logica. In questa classe sono presenti i metodi per generare le carte del gioco, per capire chi iniza a giocare, per amministrare la partenza e lo svolgimento del gioco. Inoltre ci sono i metodi che vengono richiamati dal controller quando l'umano interagisce con la grafica per scegliere la carta da giocare o decidere di passare il turno.
 		
 \section{Controller}
-	Questa classe è importantissima per il programma dato che gestisce il collegamento tra la logica e la grafica. Si occupa di richiamare i metodi per aggiornar elo stato della view dopo i cambiamenti introdotti dallo svolgere del gioco come pescare una carta o buttarne una giù. Possiede anche i metodi che avvisano con alert se un giocatore ha vinto o ha dichiarato UNO.
+	Questa classe è importantissima per il programma dato che gestisce il collegamento tra la logica e la grafica. Si occupa di richiamare i metodi per aggiornare lo stato della view dopo i cambiamenti introdotti dallo svolgere del gioco, come pescare una carta o buttarne una giù. Possiede anche i metodi che avvisano con alert se un giocatore ha vinto o ha dichiarato UNO.
+	
+\section{Misurazioni efficienza}
+	Una volta implementati i due algoritmi sono state effettuate delle misurazioni sull'efficenza degli stessi. Si è scelto di misurare in quanto tempo una partita CPU vs CPU finiva utilizzando quattro versioni degli algoritmi. La prima prova è stata effetuata usando la risoluzione completa del problema senza usare nessun test di taglio, poi si è scelto una profondità di taglio di 15, di 10 e infine di 8. Sono state effettuate 30 misurazioni per ogni versione dell'algoritmo scelto. Una volta acquisiti i dati è stata calcolata la media per ogni variante dell'algoritmo ed è stato generato un grafico per far vedere di quanto varia il tempo tra le varie versioni e tra i vari algoritmi.\\\\
+	
+	\subsection{Minimax}
+	Tabella raffigurante tutte le misurazioni effettuate con l'algoritmo Minimax
+	
+	\begin{tabular}{|l|c|c|c|c|}
+	\hline
+	esecuzione      & risoluzione completa	& test di taglio 15	& test di taglio 10	& test di taglio 8 \\
+	\hline
+		&	tempo in ms	&	tempo in ms	&	tempo in ms	&	tempo in ms\\
+	\hline
+	1	&	189	&	160514	&	161	&	165\\
+	2	&	521	&	25	&	31	&	919\\
+	3	&	1880	&	10806	&	4436	&	85\\
+	4	&	1711	&	168	&	6280	&	17\\
+	5	&	27064	&	42117	&	38	&	217\\
+	6	&	16	&	851	&	223	&	911\\
+	7	&	173	&	26121	&	25	&	81\\
+	8	&	13117	&	24	&	18	&	272\\
+	9	&	8157	&	2533	&	4428	&	40\\
+	10	&	131	&	18	&	36	&	203\\
+	11	&	12211	&	775	&	52224	&	872\\
+	12	&	15	&	42	&	397	&	328\\
+	13	&	27018	&	33	&	42	&	54\\
+	14	&	49	&	197	&	222	&	183\\
+	15	&	125	&	31	&	1480	&	45\\
+	16	&	1999	&	2256	&	1134	&	36\\
+	17	&	105120	&	5236	&	31	&	140\\
+	18	&	694	&	1862	&	781	&	1068\\
+	19	&	139127	&	56	&	176	&	1577\\
+	20	&	88	&	51	&	298	&	5939\\
+	21	&	240	&	86	&	1076	&	296\\
+	22	&	25	&	121	&	4732	&	37\\
+	23	&	23	&	632	&	51	&	144\\
+	24	&	69	&	666	&	26	&	28\\
+	25	&	9032	&	224	&	1300	&	46\\
+	26	&	1270	&	26	&	296	&	1559\\
+	27	&	110091	&	2477	&	2697	&	80\\
+	28	&	637294	&	80951	&	85	&	293\\
+	29	&	229	&	37	&	15	&	1164\\
+	30	&	139	&	298	&	161	&	91\\
+	\hline
+	media	&	36593.9	&	11307.8	&	2763.333333	&	563\\
+	\hline
+	\end{tabular}
+	
+	\subsection{Potatura $\alpha$-$\beta$}
+	Tabella raffigurante tutte le misurazioni effettuate con l'algoritmo Minimax\\
+	
+	\begin{tabular}{|l|c|c|c|c|}
+	\hline
+	esecuzione      & risoluzione completa	& test di taglio 15	& test di taglio 10	& test di taglio 8 \\
+	\hline
+		&	tempo in ms	&	tempo in ms	&	tempo in ms	&	tempo in ms\\
+	\hline
+	1&112	&	226	&	674	&	101\\
+	2	&	328	&	234	&	193	&	53\\
+	3	&	21	&	706	&	43	&	342\\
+	4	&	23	&	17	&	336	&	85\\
+	5	&	97	&	156	&	225	&	33\\
+	6	&	142	&	1012	&	25	&	259\\
+	7	&	1232	&	1123	&	149	&	49\\
+	8	&	23	&	23	&	103	&	153\\
+	9	&	25	&	37	&	16	&	152\\
+	10	&	135	&	23	&	24	&	15\\
+	11	&	26	&	44	&	38	&	177\\
+	12	&	84	&	44	&	325	&	32\\
+	13	&	13	&	90	&	14	&	84\\
+	14	&	34	&	68	&	62	&	16\\
+	15	&	18	&	16	&	988	&	105\\
+	16	&	418	&	21	&	25	&	32\\
+	17	&	24	&	18	&	36	&	100\\
+	18	&	101	&	21	&	33	&	101\\
+	19	&	4971	&	49	&	249	&	24\\
+	20	&	15	&	16	&	155	&	33\\
+	21	&	259	&	6627	&	68	&	36\\
+	22	&	612	&	27	&	58	&	84\\
+	23	&	164	&	538	&	429	&	46\\
+	24	&	52	&	293	&	12	&	125\\
+	25	&	250	&	15	&	321	&	41\\
+	26	&	49	&	45	&	23	&	256\\
+	27	&	23494	&	286	&	11	&	281\\
+	28	&	893	&	189	&	48	&	36\\
+	29	&	587	&	24	&	12	&	17\\
+	30	&	19	&	142	&	23	&	15\\
+	
+	\hline
+	media		&	1140.7	&	404.3333333	&	157.2666667	&	96.1\\
+	\hline
+	\end{tabular}
+	
+	\subsection{Grafici}
+	Una volta raccolti i dati sono stati generati tre grafici. Uno per ogni algoritmo e uno contenente entrambi gli algoritmi per rendere chiara la differenza tra loro.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=1]{grafico1.png}
+		\caption{Algoritmo Minimax}
+		\label{fig4}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.95]{grafico2.png}
+		\caption{Algoritmo Potatura $\alpha$-$\beta$}
+		\label{fig5}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.8]{grafico3.png}
+		\caption{Confronto tra i due algoritmi}
+		\label{fig6}
+	\end{figure}
+
+	\newpage
+	Come è possibile notare la potatura $\alpha$-$\beta$ è molto più performante rispetto al Minimax in tutte le categorie testate. Nelle misurazioni il tempo massimo impiegato per terminare una partita con il Minimax è stato di poco più di 10 minuti; in altre prove si è arrivato ad un tempo superiore all' ora. Per questo non è accettabile usare il Minimax normale come algoritmo per decidere quale carta usare durante una vera partita.
 
 \end{document}
