@@ -203,34 +203,30 @@ class FrameP extends JFrame{
 			
 			String nameCard;
 			
-			
-//			if(curCard.getTipocarta()=="inverti giro"){
-//				
-//				nameCard="I";
-//				
-//			}else{
-//				
-//				if(curCard.getTipocarta()=="cambia colore"){
-//					
-//					nameCard="C";
-//					
-//				}else{
-//					
-//					if(curCard.getTipocarta()=="stop"){
-//						
-//						nameCard="S";
-//						
-//					}else{
-//						
-//						nameCard=curCard.getTipocarta();
-//						
-//					}
-//					
-//				}
-//				
-//			}
-			
 			JButton card_i= new JButton(curCard.getTipocarta());
+			
+			if(curCard.getTipocarta()=="inverti giro"){
+				
+				nameCard="I";
+				
+			}else{
+				
+				if(curCard.getTipocarta()=="cambia giro"){
+					
+					nameCard="C";
+					
+				}else{
+					
+					if(curCard.getTipocarta()=="stop"){
+						
+						nameCard="S";
+						
+					}
+					
+				}
+				
+			}
+			
 			
 			
 			card_i.setPreferredSize(new Dimension(70,40));

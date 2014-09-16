@@ -174,7 +174,6 @@ class FrameP extends JFrame{
 
 // Carte Giocatore 1
 		
-		
 		JPanel g1i = new JPanel();
 		g1i.setMaximumSize(new Dimension(1000,10));
 		g1i.setBackground(Color.BLUE);
@@ -201,37 +200,8 @@ class FrameP extends JFrame{
 			
 			Carta curCard = mazzo.get(i);
 			
-			String nameCard;
-			
-			
-//			if(curCard.getTipocarta()=="inverti giro"){
-//				
-//				nameCard="I";
-//				
-//			}else{
-//				
-//				if(curCard.getTipocarta()=="cambia colore"){
-//					
-//					nameCard="C";
-//					
-//				}else{
-//					
-//					if(curCard.getTipocarta()=="stop"){
-//						
-//						nameCard="S";
-//						
-//					}else{
-//						
-//						nameCard=curCard.getTipocarta();
-//						
-//					}
-//					
-//				}
-//				
-//			}
 			
 			JButton card_i= new JButton(curCard.getTipocarta());
-			
 			
 			card_i.setPreferredSize(new Dimension(70,40));
 			card_i.setFont(new Font("Arial", Font.PLAIN, 16));
