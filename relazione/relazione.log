@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/W32TeX) (format=pdflatex 2013.11.6)  16 SEP 2014 12:22
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/W32TeX) (format=pdflatex 2013.11.6)  16 SEP 2014 14:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -676,7 +676,7 @@ l.58 \newpage
 (c:/Program Files (x86)/texlive/2013/texmf-dist/tex/latex/ucs/data/uni-32.def
 File: uni-32.def 2013/05/13 UCS: Unicode data U+2000..U+20FF
 )
-[2] [3] <uno.jpg, id=146, 213.525pt x 135.999pt>
+[2] [3] <uno.jpg, id=177, 213.525pt x 135.999pt>
 File: uno.jpg Graphic file (type jpg)
  <use uno.jpg>
 Package pdftex.def Info: uno.jpg used on input line 71.
@@ -689,17 +689,21 @@ File: omslmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 LaTeX Font Info:    Font shape `OMS/lmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/lmsy/m/n' tried instead on input line 79.
 
-[4 <./uno.jpg>] [5] <1.png, id=161, 311.66437pt x 236.38312pt>
+[4 <./uno.jpg>] [5] <1.png, id=191, 311.66437pt x 236.38312pt>
 File: 1.png Graphic file (type png)
  <use 1.png>
 Package pdftex.def Info: 1.png used on input line 125.
 (pdftex.def)             Requested size: 311.6636pt x 236.38254pt.
 
-<2.png, id=163, 537.50812pt x 537.50812pt>
+<2.png, id=193, 817.0525pt x 716.6775pt>
 File: 2.png Graphic file (type png)
  <use 2.png>
 Package pdftex.def Info: 2.png used on input line 134.
-(pdftex.def)             Requested size: 322.50735pt x 322.50735pt.
+(pdftex.def)             Requested size: 490.23529pt x 430.00983pt.
+
+Overfull \hbox (52.72742pt too wide) in paragraph at lines 134--135
+ [][] 
+ []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -724,7 +728,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 144--145
 
  []
 
-
+[7 <./2.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 146--147
 
  []
@@ -734,233 +738,263 @@ Underfull \hbox (badness 10000) in paragraph at lines 146--147
 
  []
 
-[7 <./2.png>] <3.png, id=179, 146.79843pt x 146.79843pt>
+<3.png, id=209, 146.79843pt x 146.79843pt>
 File: 3.png Graphic file (type png)
  <use 3.png>
 Package pdftex.def Info: 3.png used on input line 157.
 (pdftex.def)             Requested size: 88.07973pt x 88.07973pt.
  [8 <./3.png>] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 214--215
+Underfull \hbox (badness 10000) in paragraph at lines 210--211
 
  []
 
-LaTeX Font Info:    Try loading font information for OML+lmr on input line 217.
+[10]
+LaTeX Font Info:    Try loading font information for OML+lmr on input line 213.
 
-(c:/Program Files (x86)/texlive/2013/texmf-dist/tex/latex/lm/omllmr.fd
+ (c:/Program Files (x86)/texlive/2013/texmf-dist/tex/latex/lm/omllmr.fd
 File: omllmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `OML/lmr/m/n' in size <10.95> not available
-(Font)              Font shape `OML/lmm/m/it' tried instead on input line 217.
+(Font)              Font shape `OML/lmm/m/it' tried instead on input line 213.
 
-Overfull \hbox (22.39584pt too wide) in paragraph at lines 218--219
+Overfull \hbox (22.39584pt too wide) in paragraph at lines 214--215
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (28.9659pt too wide) in paragraph at lines 219--220
+Overfull \hbox (28.9659pt too wide) in paragraph at lines 215--216
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (22.39584pt too wide) in paragraph at lines 221--222
+Overfull \hbox (22.39584pt too wide) in paragraph at lines 217--218
 [][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (9.25574pt too wide) in paragraph at lines 223--224
+Overfull \hbox (9.25574pt too wide) in paragraph at lines 219--220
 [][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[10]
-Overfull \hbox (2.68568pt too wide) in paragraph at lines 233--234
+
+Overfull \hbox (2.68568pt too wide) in paragraph at lines 229--230
 [][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (15.82579pt too wide) in paragraph at lines 234--235
+Overfull \hbox (15.82579pt too wide) in paragraph at lines 230--231
 [][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (9.25574pt too wide) in paragraph at lines 237--238
+Overfull \hbox (9.25574pt too wide) in paragraph at lines 233--234
 [][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 255--257
-
  []
 
 [11]
-Overfull \hbox (2.68568pt too wide) in paragraph at lines 270--271
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+Underfull \hbox (badness 10000) in paragraph at lines 251--253
+
  []
 
 
-Overfull \hbox (28.9659pt too wide) in paragraph at lines 273--274
+Overfull \hbox (2.68568pt too wide) in paragraph at lines 266--267
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[12]
+Overfull \hbox (28.9659pt too wide) in paragraph at lines 269--270
 [][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (28.9659pt too wide) in paragraph at lines 292--293
+Overfull \hbox (28.9659pt too wide) in paragraph at lines 288--289
 [][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (9.25574pt too wide) in paragraph at lines 295--296
+Overfull \hbox (9.25574pt too wide) in paragraph at lines 291--292
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[12]
-Overfull \hbox (35.53595pt too wide) in paragraph at lines 305--306
+
+Overfull \hbox (35.53595pt too wide) in paragraph at lines 301--302
 [][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (9.25574pt too wide) in paragraph at lines 309--310
+Overfull \hbox (9.25574pt too wide) in paragraph at lines 305--306
 [][][][][][][][][][][][][][][][] 
  []
 
 [13]
-Underfull \hbox (badness 10000) in paragraph at lines 352--353
+Underfull \hbox (badness 10000) in paragraph at lines 348--349
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 352--353
+Underfull \hbox (badness 10000) in paragraph at lines 348--349
 
  []
 
 
-Overfull \hbox (39.73854pt too wide) in paragraph at lines 354--355
-[]$\OT1/lmr/m/n/10.95 [\OMS/lmsy/m/n/10.95 ^^@\OT1/lmr/m/n/10.95 (\OML/lmm/m/it
-/10.95 carteInManoIo \OMS/lmsy/m/n/10.95 ^^@ \OML/lmm/m/it/10.95 carteInManoAvv
-ersario\OT1/lmr/m/n/10.95 )] + (\OML/lmm/m/it/10.95 carteGiocabiliIo \OMS/lmsy/
-m/n/10.95 ^^@ \OML/lmm/m/it/10.95 carteGiocabiliAvversario\OT1/lmr/m/n/10.95 )$
- 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 354--355
+Underfull \hbox (badness 10000) in paragraph at lines 350--351
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 354--355
+Underfull \hbox (badness 10000) in paragraph at lines 350--351
 
  []
 
-[14]
-Underfull \hbox (badness 10000) in paragraph at lines 371--372
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 371--372
+[14] [15]
+Underfull \hbox (badness 10000) in paragraph at lines 365--367
 
  []
 
 
-Overfull \hbox (7.26062pt too wide) in paragraph at lines 376--416
+Overfull \hbox (35.53595pt too wide) in paragraph at lines 377--378
+[][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (35.53595pt too wide) in paragraph at lines 383--384
+[][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[16]
+Underfull \hbox (badness 10000) in paragraph at lines 391--392
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 391--392
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--395
+
+ []
+
+
+Overfull \hbox (7.26062pt too wide) in paragraph at lines 396--436
 [][] 
  []
 
-[15]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 417.
+(Font)              <12> on input line 437.
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 437.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 417.
+(hyperref)                removing `\alpha' on input line 437.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\alpha' on input line 417.
+(hyperref)                removing `math shift' on input line 437.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 417.
+(hyperref)                removing `math shift' on input line 437.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 417.
+(hyperref)                removing `\beta' on input line 437.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beta' on input line 417.
+(hyperref)                removing `math shift' on input line 437.
 
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 417.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 418--419
+Underfull \hbox (badness 10000) in paragraph at lines 438--439
 
  []
 
-
-Overfull \hbox (7.26062pt too wide) in paragraph at lines 420--461
+[17]
+Overfull \hbox (7.26062pt too wide) in paragraph at lines 440--481
 [][] 
  []
 
-[16] <grafico1.png, id=387, 479.54156pt x 305.64188pt>
+<grafico1.png, id=438, 479.54156pt x 305.64188pt>
 File: grafico1.png Graphic file (type png)
  <use grafico1.png>
-Package pdftex.def Info: grafico1.png used on input line 467.
-(pdftex.def)             Requested size: 479.54039pt x 305.64111pt.
+Package pdftex.def Info: grafico1.png used on input line 487.
+(pdftex.def)             Requested size: 489.13324pt x 311.75523pt.
 
-Overfull \hbox (42.03252pt too wide) in paragraph at lines 467--468
+Overfull \hbox (51.62537pt too wide) in paragraph at lines 487--488
  [][] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<grafico2.png, id=388, 544.28343pt x 289.83281pt>
+<grafico2.png, id=439, 544.28343pt x 289.83281pt>
 File: grafico2.png Graphic file (type png)
  <use grafico2.png>
-Package pdftex.def Info: grafico2.png used on input line 474.
-(pdftex.def)             Requested size: 517.06633pt x 275.3396pt.
+Package pdftex.def Info: grafico2.png used on input line 494.
+(pdftex.def)             Requested size: 495.2987pt x 263.74826pt.
 
-Overfull \hbox (79.55846pt too wide) in paragraph at lines 474--475
+Overfull \hbox (57.79083pt too wide) in paragraph at lines 494--495
  [][] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<grafico3.png, id=389, 508.90125pt x 637.63219pt>
+<grafico3.png, id=440, 508.90125pt x 637.63219pt>
 File: grafico3.png Graphic file (type png)
  <use grafico3.png>
-Package pdftex.def Info: grafico3.png used on input line 481.
+Package pdftex.def Info: grafico3.png used on input line 501.
 (pdftex.def)             Requested size: 407.12155pt x 510.10645pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[17]
+[18]
 
-LaTeX Warning: Text page 18 contains only floats.
+LaTeX Warning: Text page 19 contains only floats.
 
-[18 <./grafico1.png> <./grafico2.png>] 
+[19 <./grafico1.png> <./grafico2.png>] [20 <./grafico3.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 517--518
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 517--518
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 530--531
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 530--531
+
+ []
+
+[21] 
 AED: lastpage setting LastPage
-[19 <./grafico3.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 489.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 489.
+[22]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 552.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 552.
  (./relazione.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 489.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 489.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 552.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 552.
 Package rerunfilecheck Info: File `relazione.out' has not changed.
-(rerunfilecheck)             Checksum: E11D78A3290A0573B22C0F29D7CBE2C5;1453.
+(rerunfilecheck)             Checksum: 2B23EF19BD895AEE48E5835EA8F67FAD;1935.
  ) 
 Here is how much of TeX's memory you used:
- 11899 strings out of 493308
- 174844 string characters out of 6132463
- 302640 words of memory out of 5000000
- 14937 multiletter control sequences out of 15000+600000
+ 11931 strings out of 493308
+ 175279 string characters out of 6132463
+ 308643 words of memory out of 5000000
+ 14943 multiletter control sequences out of 15000+600000
  50983 words of font info for 46 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 36i,12n,43p,1836b,1769s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,12n,43p,1835b,1769s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/enc/dvips/lm/lm-mathit.
 enc}{c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/enc/dvips/lm/lm-rm.en
 c}{c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.
@@ -974,10 +1008,10 @@ lm/lmr10.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/public
 c/lm/lmr17.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/publ
 ic/lm/lmri10.pfb><c:/Program Files (x86)/texlive/2013/texmf-dist/fonts/type1/pu
 blic/lm/lmsy10.pfb>
-Output written on relazione.pdf (20 pages, 470313 bytes).
+Output written on relazione.pdf (23 pages, 481002 bytes).
 PDF statistics:
- 486 PDF objects out of 1000 (max. 8388607)
- 441 compressed objects within 5 object streams
- 208 named destinations out of 1000 (max. 500000)
- 220 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 556 PDF objects out of 1000 (max. 8388607)
+ 507 compressed objects within 6 object streams
+ 234 named destinations out of 1000 (max. 500000)
+ 268 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -91,7 +91,7 @@
 		\subsection{Obiettivo del gioco}	
 			Colui che riesce a esaurire tutte le carte che ha nella sua mano vince la partita.
 			
-		\subsection{Procediemnto del Gioco}
+		\subsection{Procedimento del Gioco}
 			Il sorteggio del mazziere avviene mediante pesca di una carta dal mazzo; colui che pesca quella con il numero più alto, diviene il mazziere.	\\
 			Dopo l'estrazione del mazziere, le carte vengono rimescolate e distribuite 7 a testa. La porzione di mazzo rimanente, detta "mazzo pesca", viene posata sul tavolo a dorso coperto, e la prima viene girata, andando così a formare il cosiddetto "mazzo scarti".\\
 			Il giocatore alla sinistra del mazziere comincia il gioco (procedendo il giro in senso orario): questi deve scartare una carta dalle proprie a disposizione, compatibile con quella in cima al mazzo scarti per colore o per numero. Ciò significa che la carta deve avere colore o numero uguale alla prima carta sul banco: ad esempio, se la carta sul banco è un 7 rosso, il giocatore può scartare una carta numerata di colore rosso, o volutamente un 7 di qualsiasi colore; da allora il colore può cambiare e così via. Alternativamente, il giocatore può usare una carta Azione (le carte azione colorate devono essere compatibili con la carta del mazzo scarti). Non si può scartare più di una carta per turno.\\
@@ -132,7 +132,7 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.6]{2.png}
-			\caption{Quadrato magico inizializzato}
+			\caption{Tavolo da gioco inizializzato}
 			\label{fig2}
 		\end{figure}
 		
@@ -163,55 +163,51 @@
 		La gestione degli eventi, infine, è stata realizzata utilizzando le librerie AWT (Abstract Window Toolkit), per la precisione il package relativo alla gestione degli eventi denominato awt.event. 
 \begin{lstlisting}
 ...
-
 start.addActionListener(new StartGame());
-
 ...
-
-class StartGame implements ActionListener {
-		
+class StartGame implements ActionListener {		
   public void actionPerformed(ActionEvent e){
-	
     JButton button = (JButton)e.getSource();
     if(button.getText()=="Inizia gioco"){
-	  if(game_1.isSelected()){
-		InsertName();
-		start.removeActionListener(this);
-	  }else{
-		
-			if(game_2.isSelected()){
-				GameTable();
-				start.removeActionListener(this);
-			
-			}
-		
+      if(game_1.isSelected()){
+	    InsertName();
+	    start.removeActionListener(this);
+      }else{
+	    if(game_2.isSelected()){
+		  GameTable();
+		  start.removeActionListener(this);
+	  }}else{			
+		if(game_2.isSelected()){
+		  g = new Gioco();
+		  g.ciSonoGiocatoriUmani(false);
+		  g.avviaIlGioco();							
+		  GameTable();
+		  start.removeActionListener(this);
 		}
-    }
-	
+	   }
+     }
   }
-
 }
 
 \end{lstlisting}
 
-		Al bottone adibito all'azione è stato aggiunto un ascoltatore per rilevarne la pressione. Una volta eseguita l'azione viene richiamata l'apposita classe che ne contiene le operazioni da eseguire. A seconda del tasto premuto l'azione eseguita sarà differente e ciò permette di poter accedere alle varie funzionalità del gioco “UNO”. Gli ascoltatori sono stati utilizzati per poter permettere varie azioni all’interno del gioco come l’avvio di una partita, la selezione della carta da giocare, il riavvio della partita ecc.
+	Al bottone adibito all'azione è stato aggiunto un ascoltatore per rilevarne la pressione. Una volta eseguita l'azione viene richiamata l'apposita classe che ne contiene le operazioni da eseguire che, in questo caso, riguardano l’avvio di una sessione di gioco tra due CPU. Più in generale, a seconda del tasto premuto l'azione eseguita sarà differente e ciò permette di poter accedere alle varie funzionalità del gioco “UNO”. Gli ascoltatori sono stati utilizzati per poter permettere varie azioni all’interno del gioco come l’avvio di una partita, la selezione della carta da giocare, il riavvio della partita ecc.	
 		
-		
-		
+\newpage
 \section{Gestione Logica}		
 	Per lo sviluppo degli algoritmi scelti e del gioco in se sono state pensate cinque classi principali che racchiudono tutta la logica del programma. Essendo il gioco UNO un gioco di carte si è pensato a una classe che implementa la singola carta e le informazioni che si porta dietro ed a una classe che implementa il mazzo di carte con la relativa gestione. Una classe gestisce il gioco implementando le operazioni per farlo iniziare e finire e due classi, una che deriva dall'altra, che implementano il giocatore umano e quello controllato dal pc. Questo serve perchè il gioco implementa la sfida tra umano contro CPU e CPU contro CPU.
 	
 	\subsection{Carta}
-		Questa è la classe che implementa le caratteristiche di una carta di UNO. Basilari per il gioco sono il colore della carta (il gioco UNO ne prevede 4: rosso, giallo, verde e blu) e il valore della carta. Le carte vanno dallo 0 al 9 e ne esistono alcune speciali come il ``pesca due carte'',``pesca quattro carte e cambia colore'' ,``cambia colore'' ,``stop'' e ``inverti il giro''. Un'alta proprietà importante è la propietà valore che verrà assegnata dall'algoritmo Minimax o Potatura $\alpha$-$\beta$ e che ci permetterà di capire quale è la carta migliore da giocare. Infine possiede due proprietà utili per gli algoritmi citati sopra, cioè se causa il salto del turno dell'avversario e se è stata ``usata''. Oltre ai normali getter e setter e ai costruttori questa classe non contiene nulla di più.
+		Questa è la classe che implementa le caratteristiche di una carta di UNO. Basilari per il gioco sono il colore della carta (il gioco UNO ne prevede 4: rosso, giallo, verde e blu) e il valore della carta. Le carte vanno dallo 0 al 9 e ne esistono alcune speciali come il ``pesca due carte'', ``pesca quattro carte e cambia colore'' ,``cambia colore'' ,``stop'' e ``inverti il giro''. Un'alta proprietà importante è la proprietà valore che verrà assegnata dall'algoritmo Minimax o Potatura $\alpha$-$\beta$ e che ci permetterà di capire quale è la carta migliore da giocare. Infine possiede due proprietà utili per gli algoritmi citati sopra, cioè se causa il salto del turno dell'avversario e se è stata ``usata''. Oltre ai normali getter e setter e ai costruttori questa classe non contiene nulla di più.
 		
 	\subsection{Mazzo}
 		Questa classe implementa le caratteristiche del Mazzo del gioco. Troviamo due liste le quali conterranno una tutte le carte presenti nel mazzo coperto e l'altra il mazzo delle carte scartate. È presente un metodo che permette di mescolare le carte del mazzo. Questo metodo utilizza la funzionalità \textit{shuffle} integrata in Java. Sono presenti i metodi per pescare una carta dal mazzo coperto, per restituire la prima carta del mazzo scarti, per scegliere a caso la prima carta scartata all'inizio della partita, per buttare una carta nel mazzo scarti e due metodi utili per clonare il mazzo e resettarlo ai valori dati per parametro. Questi due ultimi metodi sono molto utili quando si ritorna dalla ricorsione per ristabilire i valori presenti nel mazzo prima di aver eseguito a ricorsione.
 		
 	\subsection{Giocatore}
-		Le azioni che il giocatore umano può effettuare sono implementate in questa classe. Sono presenti tre proprietà: il nome del giocatore, la lista delle carte che il giocatore tiene in mano e un riferimento alla classe che gestisce il gioco presente dopo in questa relazione. Grazie a questo riferimento è in grado di poter modificare il mazzo durante il gioco. La clase implementa i metodi per pescare una carta dal mazzo e aggiungerla alla propria lista di carte in mano, per giocare una carta una volta selezionata dalla UI e per compiere le azioni di passare il turno, dichiarare UNO e dichiarare Vittoria. Quando clicco su una carta potrebbe essere che tale carta non sia giocabile, oppure quando tocca al giocatore CPU esso deve controllare se la carta presa in considerazione è giocabile; per questo è stato creato un metodo che dato in ingresso la carta presa in considerazione, la carta sul banco, le carte in mano e l'ultimo colore valido (può essere che sia diverso dalla carta sul banco grazie all'azione di cambia colore o pesca 4 carte) restituisce vero o falso se tale carta è giocabile. È possibile che una carta si agiocabile anche se ha colore diverso ma presenta lo stesso simbolo.
+		Le azioni che il giocatore umano può effettuare sono implementate in questa classe. Sono presenti tre proprietà: il nome del giocatore, la lista delle carte che il giocatore tiene in mano e un riferimento alla classe che gestisce il gioco presente dopo in questa relazione. Grazie a questo riferimento è in grado di poter modificare il mazzo durante il gioco. La classe implementa i metodi per pescare una carta dal mazzo e aggiungerla alla propria lista di carte in mano, per giocare una carta una volta selezionata dalla UI e per compiere le azioni di passare il turno, dichiarare UNO e dichiarare Vittoria. Quando clicco su una carta potrebbe essere che tale carta non sia giocabile, oppure quando tocca al giocatore CPU esso deve controllare se la carta presa in considerazione è giocabile; per questo è stato creato un metodo che dato in ingresso la carta presa in considerazione, la carta sul banco, le carte in mano e l'ultimo colore valido (può essere che sia diverso dalla carta sul banco grazie all'azione di cambia colore o pesca 4 carte) restituisce vero o falso se tale carta è giocabile. È possibile che una carta sia giocabile anche se ha colore diverso ma presenta lo stesso simbolo.
 		
 	\subsection{GiocatoreCPU}	
-		Questa classe si occupa del giocatore controllato dal computer. Dato che è una normale estensione, GiocatoreCPU estende la classe Giocatore così da poter riutilizzare metodi comuni senza riscriverli due o più volte. Qua sono presenti i metodi più importanti del proggetto dato che verte su questi: sono presenti i metodi che implementano il \textbf{Minimax} e la \textbf{Potatura $\alpha$-$\beta$}. Dato che differiscono di molto poco questi due algoritmi è stato deciso di implementarli assieme e distinguere le due scelte tramite una variabile booleana. L'implementazione avviene in tre diversi metodi privati. Il primo inizializza li stati necessari per il corretto funzionamento, avvia l'algoritmo e in base al risultato seleziona la mossa miglire da compiere. Dato che UNO è un gioco di carte, le carte iniziali dell'avversario sono sconosciute. Dalla teoria si sà che tipicamente si può calcolare una probabilità per ogni possibile ordine delle carte quindi si è deciso di ripetere l'algoritmo 50 volte ogni volta con le carte dell'avversario differenti (generate randomicamente ogni volta che viene richiamato l'algoritmo) e di scegliere l'azione che vince più mani in media. All'inizio si era ipotizzato ripetere l'algoritmo per 100 volte ma si è notato che la maggior parte delle volte veniva scelta l'azione ottima al primo colpo quindi si è deciso di scendere a 50 volte per essere sempre sicuri che venga scelta l'azione migliore ma ad una velocità maggiore. \\
+		Questa classe si occupa del giocatore controllato dal computer. Dato che è una normale estensione, GiocatoreCPU estende la classe Giocatore così da poter riutilizzare metodi comuni senza riscriverli due o più volte. Qua sono presenti i metodi più importanti del progetto dato che verte su questi: sono presenti i metodi che implementano il \textbf{Minimax} e la \textbf{Potatura $\alpha$-$\beta$}. Dato che differiscono di molto poco questi due algoritmi è stato deciso di implementarli assieme e distinguere le due scelte tramite una variabile booleana. L'implementazione avviene in tre diversi metodi privati. Il primo inizializza li stati necessari per il corretto funzionamento, avvia l'algoritmo e in base al risultato seleziona la mossa migliore da compiere. Dato che UNO è un gioco di carte, le carte iniziali dell'avversario sono sconosciute. Dalla teoria si sà che tipicamente si può calcolare una probabilità per ogni possibile ordine delle carte quindi si è deciso di ripetere l'algoritmo 50 volte ogni volta con le carte dell'avversario differenti (generate randomicamente ogni volta che viene richiamato l'algoritmo) e di scegliere l'azione che vince più mani in media. All'inizio si era ipotizzato ripetere l'algoritmo per 100 volte ma si è notato che la maggior parte delle volte veniva scelta l'azione ottima al primo colpo quindi si è deciso di scendere a 50 volte per essere sempre sicuri che venga scelta l'azione migliore ma ad una velocità maggiore. \\
 		
 \begin{lstlisting}
 for(int i = 0 ; i < 50; i++){
@@ -249,10 +245,10 @@ for(int i = 0 ; i < 50; i++){
 }
 \end{lstlisting}
 		
-		Sul pezzo di codice riportato possiamo notare la chiamata al metodo ``TurnoDiMax'' fondamentale per gli algoritmi scelti. Dato che il \textbf{Minimax} e la \textbf{Potatura $\alpha$-$\beta$} non differiscono molto, sono stati implementati con gli stessi due metodi (``TurnoDiMax'' e ``TurnoDiMin'') e grazie alla variabile booleana \textit{isMinimax} siamo in grado di distinguere quali dei due algoritmi stiamo usando. I parametri passati al metodo sono comuni ai due algorimti tranne per i valori di $\alpha$ e $\beta$ (inizializzati a -10000 e +10000) che sono utilizzati solamente dalla Potatura $\alpha$-$\beta$. Nel codice si può notare anche il metodo che dato il risultato ottenuto dagli algoritmi ci restituisce la carta da giocare ed infine è presente l'incremento all'indice presente su un vettore che conteggia le volte su 50 che quella carta è stata scelta.
+		Sul pezzo di codice riportato possiamo notare la chiamata al metodo ``TurnoDiMax'' fondamentale per gli algoritmi scelti. Dato che il \textbf{Minimax} e la \textbf{Potatura $\alpha$-$\beta$} non differiscono molto, sono stati implementati con gli stessi due metodi (``TurnoDiMax'' e ``TurnoDiMin'') e grazie alla variabile booleana \textit{isMinimax} siamo in grado di distinguere quali dei due algoritmi stiamo usando. I parametri passati al metodo sono comuni ai due algoritmi tranne per i valori di $\alpha$ e $\beta$ (inizializzati a -10000 e +10000) che sono utilizzati solamente dalla Potatura $\alpha$-$\beta$. Nel codice si può notare anche il metodo che dato il risultato ottenuto dagli algoritmi ci restituisce la carta da giocare ed infine è presente l'incremento all'indice presente su un vettore che conteggia le volte su 50 che quella carta è stata scelta.
 		
 		\paragraph{TurnoDiMax}
-		Implementazione della parte di MAX dell'algoritmo. Riceve in ingresso lo stato del gioco attuale (carte in mano a MAX, carte in mano a MIN, mazzo totale), le due variabili $\alpha$ e $\beta$ necessarie per la potatura, la variabile booleana che distinge se stiamo eseguendo l'algormitmo Minimax o la Potatura $\alpha$-$\beta$, il livello raggiunto nella discesa dell'albero e l'ultimo colore valido di gioco. All'inizio vengono effettuati due controlli: se abbiamo raggiunto una foglia dell'albero o se abbiamo raggiunto il limite deciso dal test di taglio. In entrambi i casi ritorniamo il valore del nodo definito da una funzione di valutazione o dal fatto che il giocatore ha vinto o perso. Successivamente ci sono i controlli sulla carta precendente. Se era una carta Jolly (+4 e cambia colore), una carta +2 o una stop/cambia giro devo agire in conseguenza all'effetto della carta, come pescare carte o saltare il turno. Se quest'utlimo è il caso che si verifica esco direttamente dalla funzione ritornando NULL che verrà interpretato come azione di saltare il giro. Se questi controlli vengono superati allora siamo sicuro che è il nostro turno e posso procedere con la scelta delle carte. Per ogni carta consistente con quella scoperta sul banco devo richiamare TurnoDiMin per ottenere il valore minimax di quel sottoalbero generato dal gioco della carta. Qui entra in campo la variabile booleana che ci permette di usare le due tecniche di ricerca del valore, se stiamo usando il semplice Minimax devo tenermi in memoria il massimo valore restituito da TurnoDiMin; se stiamo usando la Potatura $\alpha$-$\beta$ se trovo un valore che è maggiore di $\beta$ posso restituire quel valore risparmiando la visita di tutti i sottoalberi rimenenti, altrimenti aggiorno solamente $\alpha$.\\
+		Implementazione della parte di MAX dell'algoritmo. Riceve in ingresso lo stato del gioco attuale (carte in mano a MAX, carte in mano a MIN, mazzo totale), le due variabili $\alpha$ e $\beta$ necessarie per la potatura, la variabile booleana che distingue se stiamo eseguendo l'algoritmo Minimax o la Potatura $\alpha$-$\beta$, il livello raggiunto nella discesa dell'albero e l'ultimo colore valido di gioco. All'inizio vengono effettuati due controlli: se abbiamo raggiunto una foglia dell'albero o se abbiamo raggiunto il limite deciso dal test di taglio. In entrambi i casi ritorniamo il valore del nodo definito da una funzione di valutazione o dal fatto che il giocatore ha vinto o perso. Successivamente ci sono i controlli sulla carta precedente. Se era una carta Jolly (+4 e cambia colore), una carta +2 o una stop/cambia giro devo agire in conseguenza all'effetto della carta, come pescare carte o saltare il turno. Se quest'ultimo è il caso che si verifica esco direttamente dalla funzione ritornando NULL che verrà interpretato come azione di saltare il giro. Se questi controlli vengono superati allora siamo sicuro che è il nostro turno e posso procedere con la scelta delle carte. Per ogni carta consistente con quella scoperta sul banco devo richiamare TurnoDiMin per ottenere il valore minimax di quel sottoalbero generato dal gioco della carta. Qui entra in campo la variabile booleana che ci permette di usare le due tecniche di ricerca del valore, se stiamo usando il semplice Minimax devo tenermi in memoria il massimo valore restituito da TurnoDiMin; se stiamo usando la Potatura $\alpha$-$\beta$ se trovo un valore che è maggiore di $\beta$ posso restituire quel valore risparmiando la visita di tutti i sottoalberi rimanenti, altrimenti aggiorno solamente $\alpha$.\\
 		Ora mostro degli estratti di codice di questo metodo che esprimono in codice quanto appena detto. \\
 	
 \begin{lstlisting}
@@ -349,9 +345,9 @@ return valori;
 		TurnoDiMin, come dice il nome, implementa la parte di MIN dell'algoritmo. È strutturato esattamente come TurnoDiMax con la differenza che piuttosto di ritornare il massimo valore ritorna il minimo e nel caso della Potatura $\alpha$-$\beta$ se il valore restituito dalla chiamata ricorsiva è minore di $\alpha$ allora posso restituire tale valore non visitando i rimanenti sottoalberi, altrimenti aggiorno $\beta$.
 		
 		\paragraph{Test di taglio}
-		Si è visto che ricercare una soluzione esatta con il Minimax non è fattibile dato numero medio di ramificazioni pari a 24 e massima profondità raggiungibile pari a circa 48. In realtà si è notato che nell'applicazione reale dell'algoritmo è raro che si raggiunga questa estensione dell'albero. In ogni caso si è scelto di limitare la profondità di ricerca utilizzando un test di taglio e una funzione di valutazione. È stato scelto un limite di profondità che porta in media la conclusione della partita in tempi rapidi anche se certe mosse richiedono comunue abbastanza tempo per essere ``pensate''. Come funzione di valutazione si è scelto di restituire un valore calcolato da tale formula.\\\\
+		Si è visto che ricercare una soluzione esatta con il Minimax non è fattibile dato numero medio di ramificazioni pari a 24 e massima profondità raggiungibile pari a circa 48. In realtà si è notato che nell'applicazione reale dell'algoritmo è raro che si raggiunga questa estensione dell'albero. In ogni caso si è scelto di limitare la profondità di ricerca utilizzando un test di taglio e una funzione di valutazione. È stato scelto un limite di profondità pari a 10 che porta in media la conclusione della partita in tempi rapidi anche se certe mosse richiedono comunque abbastanza tempo per essere ``pensate''. Come funzione di valutazione si è scelto di restituire un valore calcolato da tale formula.\\\\
 		
-		$ [- (carteInManoIo - carteInManoAvversario)] + (carteGiocabiliIo - carteGiocabiliAvversario) $\\\\
+$ [- (carteInManoIo - carteInManoAvv)] + (carteGiocabiliIo - carteGiocabiliAvv) $\\\\
 		
 		Si è visto che restituisce risultati accettabili nei fini della scelta della carta ottima da giocare. Con carte giocabili si intendono le carte dello stesso colore, dello stesso simbolo o le carte Jolly. 
 		
@@ -359,19 +355,43 @@ return valori;
 		Se durante il gioco finiscono le carte del mazzo si è deciso di assegnare la vittoria della partita al giocatore con meno carte in mano. È inoltre possibile, solo in questa situazione, che i due giocatori finiscano in parità. In tal caso la partita finisce in parità, si è scelto di non implementare una sorta di calcolo del punteggio.
 		
 		\paragraph{ScegliColore}
-		Durante il gioco è possibile che vengano buttate in campo le carte Jolly. Queste permettono di cambiare il colore delle future carte giocate ma solo se non si possegono più carte dello stesso colore della carta presente in campo. Per restituire il nuovo colore di gioco si è scelto di scrivere un metodo che controlla il colore dominante in mano e sceglie quello per il gioco. Se nessun colore fosse dominante si trovano i due colori dominanti e se ne restituisce uno a caso tra i due. Se non c'è nessun colore dominante si restituisce un colore a caso controllando che non sia lo stesso di quello già in gioco.
+		Durante il gioco è possibile che vengano buttate in campo le carte Jolly. Queste permettono di cambiare il colore delle future carte giocate ma solo se non si posseggono più carte dello stesso colore della carta presente in campo. Per restituire il nuovo colore di gioco si è scelto di scrivere un metodo che controlla il colore dominante in mano e sceglie quello per il gioco. Se nessun colore fosse dominante si trovano i due colori dominanti e se ne restituisce uno a caso tra i due. Se non c'è nessun colore dominante si restituisce un colore a caso controllando che non sia lo stesso di quello già in gioco.
 	
 	\subsection{GiocoUno}
-		Questa classe gestisce la gestione dell'intero gioco. Presenta come attributi la lista dei giocatori, il riferimento al mazzo, variabili booleane che controllano se ci sono giocatori umani, la tipologia dell'algoritmo e se il gioco è finito. Tiene traccia del colore attuale in gioco e il riferimento al controller che si occupa di far interagire la grafica con la logica. In questa classe sono presenti i metodi per generare le carte del gioco, per capire chi iniza a giocare, per amministrare la partenza e lo svolgimento del gioco. Inoltre ci sono i metodi che vengono richiamati dal controller quando l'umano interagisce con la grafica per scegliere la carta da giocare o decidere di passare il turno.
-		
+		Questa classe gestisce la gestione dell'intero gioco. Presenta come attributi la lista dei giocatori, il riferimento al mazzo, variabili booleane che controllano se ci sono giocatori umani, la tipologia dell'algoritmo e se il gioco è finito. Tiene traccia del colore attuale in gioco e il riferimento al controller che si occupa di far interagire la grafica con la logica. In questa classe sono presenti i metodi per generare le carte del gioco, per capire chi inizia a giocare, per amministrare la partenza e lo svolgimento del gioco. Inoltre ci sono i metodi che vengono richiamati dal controller quando l'umano interagisce con la grafica per scegliere la carta da giocare o decidere di passare il turno.
+
+\newpage		
 \section{Controller}
-	Questa classe è importantissima per il programma dato che gestisce il collegamento tra la logica e la grafica. Si occupa di richiamare i metodi per aggiornare lo stato della view dopo i cambiamenti introdotti dallo svolgere del gioco, come pescare una carta o buttarne una giù. Possiede anche i metodi che avvisano con alert se un giocatore ha vinto o ha dichiarato UNO.
-	
+	Questa classe è importantissima per il programma dato che gestisce il collegamento tra la logica e la grafica. Si occupa di richiamare i metodi per aggiornare lo stato della view dopo i cambiamenti introdotti dallo svolgere del gioco, come pescare una carta o buttarne una giù. Possiede anche i metodi che avvisano con alert se un giocatore ha vinto o ha dichiarato UNO.\\\\
+	Un esempio di questi metodi è visibile qui sotto.
+
+\begin{lstlisting}
+public Gioco(){
+  //istanzio oggetto gioco
+  this._gioco = new GiocoUno(this);
+  //genero le carte per giocare
+  this._gioco.GeneraCarte();
+}
+
+public List<Carta> getMazzo(List<Object> gio, int i){
+  Giocatore attuale = (Giocatore)this._gioco.getListaGiocatori().get(i);
+  return attuale.getCarteInMano();	
+}
+
+public void giocaCarta(Carta curCard, int plr){ 	
+  Giocatore giocatoreUmano;
+  giocatoreUmano = (Giocatore) this._gioco.getListaGiocatori().get(plr);
+  Carta gioca = giocatoreUmano.GiocaCarta(curCard); // Grafica ok 
+  System.out.println(gioca.getTipocarta());
+  this._gioco.ButtaCarta(gioca, plr);	
+}
+\end{lstlisting}
+\newpage	
 \section{Misurazioni efficienza}
-	Una volta implementati i due algoritmi sono state effettuate delle misurazioni sull'efficenza degli stessi. Si è scelto di misurare in quanto tempo una partita CPU vs CPU finiva utilizzando quattro versioni degli algoritmi. La prima prova è stata effetuata usando la risoluzione completa del problema senza usare nessun test di taglio, poi si è scelto una profondità di taglio di 15, di 10 e infine di 8. Sono state effettuate 30 misurazioni per ogni versione dell'algoritmo scelto. Una volta acquisiti i dati è stata calcolata la media per ogni variante dell'algoritmo ed è stato generato un grafico per far vedere di quanto varia il tempo tra le varie versioni e tra i vari algoritmi.\\\\
+	Una volta implementati i due algoritmi sono state effettuate delle misurazioni sull'efficienza degli stessi. Si è scelto di misurare in quanto tempo una partita CPU vs CPU finiva utilizzando quattro versioni degli algoritmi. La prima prova è stata effettuata usando la risoluzione completa del problema senza usare nessun test di taglio, poi si è scelto una profondità di taglio di 15, di 10 e infine di 8. Sono state effettuate 30 misurazioni per ogni versione dell'algoritmo scelto. Una volta acquisiti i dati è stata calcolata la media per ogni variante dell'algoritmo ed è stato generato un grafico per far vedere di quanto varia il tempo tra le varie versioni e tra i vari algoritmi.\\\\
 	
 	\subsection{Minimax}
-	Tabella raffigurante tutte le misurazioni effettuate con l'algoritmo Minimax
+	Tabella raffigurante tutte le misurazioni effettuate con l'algoritmo Minimax\\
 	
 	\begin{tabular}{|l|c|c|c|c|}
 	\hline
@@ -464,14 +484,14 @@ return valori;
 	
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=1]{grafico1.png}
+		\includegraphics[scale=1.02]{grafico1.png}
 		\caption{Algoritmo Minimax}
 		\label{fig4}
 	\end{figure}
 	
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.95]{grafico2.png}
+		\includegraphics[scale=0.91]{grafico2.png}
 		\caption{Algoritmo Potatura $\alpha$-$\beta$}
 		\label{fig5}
 	\end{figure}
@@ -485,5 +505,48 @@ return valori;
 
 	\newpage
 	Come è possibile notare la potatura $\alpha$-$\beta$ è molto più performante rispetto al Minimax in tutte le categorie testate. Nelle misurazioni il tempo massimo impiegato per terminare una partita con il Minimax è stato di poco più di 10 minuti; in altre prove si è arrivato ad un tempo superiore all' ora. Per questo non è accettabile usare il Minimax normale come algoritmo per decidere quale carta usare durante una vera partita.
-
+	
+\section{Manuale Utente}
+	In questa sezione inseriamo una linea guida per l'utilizzo corretto del programma da noi sviluppato e per capire come funziona per chi non ha mai provato il gioco UNO o una versione dello stesso per Computer.
+	
+	\subsection{Avvio di una partita}
+		Avviato il programma UNO sarà possibile scegliere due modalità, CPU VS Giocatore umano e CPU VS CPU. Nel primo caso un utente potrà giocare contro la CPU mentre nel secondo caso sarà possibile far scontrare due CPU. 
+		Se si sceglierà la prima opzione sarà anche possibile inserire il proprio nome per identificare l’utente umano.
+	
+	\subsection{Struttura del tavolo di gioco e carte}
+		La schermata principale è suddivisa in tre parti: il mazzo del primo giocatore, il tavolo di gioco ed infine il mazzo del secondo giocatore. Nella zona adibita ai mazzi sono visualizzate le carte attualmente possedute dai rispettivi giocatori mentre nella zona adibita al tavolo sono invece visualizzati la pila delle carte scartate, i comandi per far avanzare il gioco e la pila delle carte coperte.\\\\
+		
+		Di seguito verranno ora elencate le carte disponibili nel gioco:
+		\begin{itemize}
+			\item Carte numero: sono identificate da un numero ed un colore.
+			\item I : carte ``Inverti giro'', possono avere uno dei quattro colori disponibili.
+			\item S : carte ``Stop'', possono avere uno dei quattro colori disponibili.
+			\item +2 : carte ``Più due'', possono avere uno dei quattro colori disponibili.
+			\item +4 : carta ``Più quattro cambia colore''.
+			\item C : carta ``Cambia colore''.
+		\end{itemize}
+		
+	\subsection{Funzionamento del programma – CPU VS Giocatore umano}
+		Avviata una partita CPU VS Giocatore umano l’utente sarà sempre il primo a dover eseguire la prima mossa. Potrà scegliere una delle carte che ha in mano oppure pescarne una. In entrambe i casi, una volta compiuta l’azione verrà automaticamente passato il turno alla CPU e si dovrà avviare la prossima azione schiacciando l’apposito pulsante “Turno CPU”.\\\\
+		
+		Di seguito saranno ora spiegate le azioni che l’utente umano dovrà eseguire in relazione ai vari comandi intrapresi dalla CPU:
+		\begin{itemize}
+			\item CPU lancia ``Inverti giro'': l’utente dovrà passare il turno tramite il pulsante ``Passa''.
+			\item CPU lancia ``Stop'': l’utente dovrà passare il turno tramite il pulsante ``Passa''.
+			\item CPU lancia ``Più 2'': l’utente riceverà le due carte e dovrà passare il turno tramite il pulsante ``Passa''.
+			\item CPU lancia ``Più 4 cambia colore'': l’utente riceverà le quattro carte e dovrà passare il turno tramite il pulsante ``Passa''.
+			\item CPU lancia ``Cambia colore'': l’utente visualizzerà il colore scelto dalla CPU e dovrà quindi eseguire la sua mossa.
+		\end{itemize}
+		
+		Di seguito saranno ora spiegate le azioni che l’utente umano dovrà eseguire in relazione al lancio delle varie carte:
+		\begin{itemize}
+			\item Giocatore umano lancia ``Più 4 cambia colore'': l’utente, una volta lanciata questa carta dovrà scegliere quale colore è necessario attivare e avviare poi il turno della CPU. Questa carta non potrà essere giocata nel caso in cui si posseggano in mano carte del medesimo colore di quella sulla cima della pila.
+			\item Giocatore umano lancia ``Cambia colore'': l’utente, una volta lanciata questa carta dovrà scegliere quale colore è necessario attivare e avviare poi il turno della CPU. Questa carta non potrà essere giocata nel caso in cui si posseggano in mano carte del medesimo colore di quella sulla cima della pila.
+		\end{itemize}
+		
+	\subsection{Funzionamento del programma – CPU VS CPU}
+		Avviata una partita CPU VS CPU all’utente umano sarà unicamente richiesto di premere il pulsante ``Avanza'' che consentirà alle due CPU di eseguire le azioni relative al loro rispettivo turno, così da poter visualizzare l’evoluzione della partita mossa per mossa. 
+		
+	\subsection{Terminazione di una partita}	
+		La terminazione di una partita potrà avvenire in tre modi diversi. Si può scegliere se abbandonare la partita corrente e avviarne una nuova, potrà terminare perché uno dei due giocatori ha esaurito tutte le carte nella sua mano o potrà terminare perché sono esaurite le carte sulla pila delle carte coperte. Se ci troviamo in una di queste ultime due circostanze sarà possibile visualizzare chi tra i due giocatori ha vinto ed avviare nel caso un’ulteriore partita.
 \end{document}
