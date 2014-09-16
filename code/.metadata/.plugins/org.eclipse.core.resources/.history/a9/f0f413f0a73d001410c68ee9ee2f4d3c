@@ -154,7 +154,7 @@ class FrameP extends JFrame{
 		
 		c.removeAll();
 		c = (JPanel)this.getContentPane();
-		this.setSize(800,700);
+		this.setSize(800,800);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
@@ -203,7 +203,7 @@ class FrameP extends JFrame{
 			
 			JButton card_i= new JButton(curCard.getTipocarta());
 			
-			card_i.setPreferredSize(new Dimension(70,40));
+			card_i.setPreferredSize(new Dimension(50,70));
 			card_i.setFont(new Font("Arial", Font.PLAIN, 16));
 			
 			
@@ -261,7 +261,7 @@ class FrameP extends JFrame{
 		
 		// Settaggio colore carta in cima allo stack!!!
 		JButton stack = new JButton(g.numCard());
-		stack.setPreferredSize(new Dimension(70,40));
+		stack.setPreferredSize(new Dimension(50,70));
 		stack.setFont(new Font("Arial", Font.PLAIN, 16));
 		
 		if(g.colCard()=="giallo"){
@@ -296,7 +296,7 @@ class FrameP extends JFrame{
 		restart.addActionListener(new ResetGame());
 
 		JButton take = new JButton("Pesca");
-		take.setPreferredSize(new Dimension(70,40));
+		take.setPreferredSize(new Dimension(50,50));
 		take.addActionListener(new AddCard());
 
 		
@@ -369,7 +369,7 @@ class FrameP extends JFrame{
 			
 			JButton card_j= new JButton(curCard.getTipocarta());
 			
-			card_j.setPreferredSize(new Dimension(70,40));
+			card_j.setPreferredSize(new Dimension(50,50));
 			card_j.setFont(new Font("Arial", Font.PLAIN, 16));
 			
 			
